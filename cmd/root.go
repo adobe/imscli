@@ -1,0 +1,48 @@
+// Copyright 2020 Adobe. All rights reserved.
+// This file is licensed to you under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. You may obtain a copy
+// of the License at http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software distributed under
+// the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+// OF ANY KIND, either express or implied. See the License for the specific language
+// governing permissions and limitations under the License.
+
+package cmd
+
+import (
+	"os"
+
+	"github.com/adobe/imscli/ims"
+	"github.com/spf13/cobra"
+	"github.com/telegrapher/vrb"
+)
+
+func RootCmd() *cobra.Command {
+	var verbose bool = false
+	var configFile string
+	var imsConfig = &ims.Config{}
+
+	cmd := &cobra.Command{
+		Use:     "imscli",
+		Short:   "imscli is a tool to interact with Adobe IMS",
+		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
+		Version: "0.1.0",
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if verbose {
+				vrb.Init(os.Stderr)
+			}
+			// This call of the initParams will load all env vars, config file and flags.
+			return initParams(cmd, imsConfig, configFile)
+		},
+	}
+	cmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output.")
+	cmd.PersistentFlags().StringVarP(&imsConfig.URL, "url", "u", "https://ims-na1.adobelogin.com", "IMS Endpoint URL.")
+	cmd.PersistentFlags().StringVarP(&configFile, "configFile", "f", "", "Configuration file.")
+
+	cmd.AddCommand(
+		authzCmd(imsConfig),
+		profileCmd(imsConfig),
+	)
+	return cmd
+}
