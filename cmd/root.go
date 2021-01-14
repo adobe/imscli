@@ -27,7 +27,7 @@ func RootCmd() *cobra.Command {
 		Use:     "imscli",
 		Short:   "imscli is a tool to interact with Adobe IMS",
 		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
-		Version: "0.1.0",
+		Version: "0.1.1",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if verbose {
 				vrb.Init(os.Stderr)

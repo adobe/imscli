@@ -24,7 +24,7 @@ type Config struct {
 	Account        string
 	Scopes         []string
 	Metascopes     []string
-	UserToken      string
+	AccessToken    string
 	Timeout        int
 }
 

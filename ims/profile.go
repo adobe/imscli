@@ -19,7 +19,7 @@ import (
 
 func (i Config) validateGetProfileConfig() error {
 	switch {
-	case i.UserToken == "":
+	case i.AccessToken == "":
 		return fmt.Errorf("missing access token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
@@ -47,7 +47,7 @@ func (i Config) GetProfile() (string, error) {
 	}
 
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
-		AccessToken: i.UserToken,
+		AccessToken: i.AccessToken,
 	})
 	if err != nil {
 		return "", err

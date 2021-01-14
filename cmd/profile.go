@@ -36,7 +36,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&imsConfig.UserToken, "accessToken", "t", "", "Access token.")
+	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
 
 	return cmd
 }
