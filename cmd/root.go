@@ -18,7 +18,7 @@ import (
 	"github.com/telegrapher/vrb"
 )
 
-func RootCmd() *cobra.Command {
+func RootCmd(version string) *cobra.Command {
 	var verbose bool = false
 	var configFile string
 	var imsConfig = &ims.Config{}
@@ -27,7 +27,7 @@ func RootCmd() *cobra.Command {
 		Use:     "imscli",
 		Short:   "imscli is a tool to interact with Adobe IMS",
 		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
-		Version: "0.1.1",
+		Version: version,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if verbose {
 				vrb.Init(os.Stderr)

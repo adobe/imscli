@@ -17,8 +17,12 @@ import (
 	"github.com/adobe/imscli/cmd"
 )
 
+// To be initialized with ldflags -X main.version
+// Done automatically by goreleaser
+var version string
+
 func main() {
-	rootCmd := cmd.RootCmd()
+	rootCmd := cmd.RootCmd(version)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
