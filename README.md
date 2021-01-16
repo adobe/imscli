@@ -7,7 +7,7 @@ This project is wrapping adobe/ims-go.
 
 ## Installation
 
-Build the CLI or download a prebuilt binary.
+Build the CLI or download a prebuilt [release](https://github.com/adobe/imscli/releases).
 
 Example:
 ```
@@ -34,7 +34,7 @@ The complete documentation of the project is available in the [DOCUMENTATION.md]
 
 ## Contributing
 
-Contributions are welcomed! Read the [Contributing Guide](./.github/CONTRIBUTING.md) for more information.
+Contributions are welcomed! Read the [Contributing Guide](CONTRIBUTING.md) for more information.
 
 ## Licensing
 
