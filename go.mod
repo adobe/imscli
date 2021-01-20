@@ -14,8 +14,8 @@ go 1.15
 
 require (
 	github.com/adobe/ims-go v0.7.0
-	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
-	github.com/spf13/cobra v1.0.0
-	github.com/spf13/viper v1.4.0
-	github.com/telegrapher/vrb v0.0.0-20200430014600-095e3919640d
+	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
+	github.com/spf13/cobra v1.1.0
+	github.com/spf13/viper v1.7.1
+	github.com/telegrapher/vrb v0.1.0
 )
