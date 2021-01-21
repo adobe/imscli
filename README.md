@@ -1,4 +1,5 @@
 # imscli
+![CodeQL](https://github.com/adobe/imscli/workflows/CodeQL/badge.svg)
 
 This project is a small CLI tool to interact with the IMS API. The goal of this project
 is to provide a small tool that can be used to troubleshoot integrations with IMS.
