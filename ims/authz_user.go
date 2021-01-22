@@ -13,6 +13,7 @@ package ims
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -21,7 +22,6 @@ import (
 	"github.com/adobe/ims-go/ims"
 	"github.com/adobe/ims-go/login"
 	"github.com/pkg/browser"
-	"github.com/telegrapher/vrb"
 )
 
 const port = 8888
@@ -47,7 +47,7 @@ func (i Config) validateAuthorizeUserConfig() error {
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
 	default:
-		vrb.Println("all needed parameters verified not empty")
+		log.Println("all needed parameters verified not empty")
 	}
 
 	return nil
@@ -98,7 +98,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		return "", fmt.Errorf("unable to listen at port %d", port)
 	}
 
-	vrb.Println("Local server successfully launched and contacted.")
+	log.Println("Local server successfully launched and contacted.")
 
 	localUrl := fmt.Sprintf("http://localhost:%d/", port)
 
@@ -116,9 +116,9 @@ func (i Config) AuthorizeUser() (string, error) {
 
 	select {
 	case serr = <-server.Error():
-		vrb.Println("The IMS HTTP handler returned a message.")
+		log.Println("The IMS HTTP handler returned a message.")
 	case resp = <-server.Response():
-		vrb.Println("The IMS HTTP handler returned a message.")
+		log.Println("The IMS HTTP handler returned a message.")
 	case <-time.After(time.Minute * 5):
 		fmt.Fprintf(os.Stderr, "Timeout reached waiting for the user to finish the authentication ...\n")
 		serr = fmt.Errorf("user timed out")
@@ -127,12 +127,12 @@ func (i Config) AuthorizeUser() (string, error) {
 	if err = server.Shutdown(context.Background()); err != nil {
 		return "", fmt.Errorf("error shutting down the local server: %v", err)
 	}
-	vrb.Println("Local server shut down ...")
+	log.Println("Local server shut down ...")
 
 	if serr != nil {
 		return "", fmt.Errorf("error negotiating the authorization code: %v", serr)
 	}
-	vrb.Println("No error from Authorization Code handler, server is successfully shut down.")
+	log.Println("No error from Authorization Code handler, server is successfully shut down.")
 
 	return resp.AccessToken, nil
 }

@@ -12,9 +12,9 @@ package ims
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/adobe/ims-go/ims"
-	"github.com/telegrapher/vrb"
 )
 
 func (i Config) validateGetProfileConfig() error {
@@ -24,7 +24,7 @@ func (i Config) validateGetProfileConfig() error {
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
 	default:
-		vrb.Println("all needed parameters verified not empty")
+		log.Println("all needed parameters verified not empty")
 	}
 	return nil
 }

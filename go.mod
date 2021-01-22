@@ -17,5 +17,4 @@ require (
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/spf13/cobra v1.1.0
 	github.com/spf13/viper v1.7.1
-	github.com/telegrapher/vrb v0.1.0
 )

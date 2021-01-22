@@ -62,4 +62,4 @@ Temporary Items
 *.yml
 
 dist/
-imscli
+/imscli

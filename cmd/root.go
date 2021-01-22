@@ -11,11 +11,11 @@
 package cmd
 
 import (
-	"os"
+	"io/ioutil"
+	"log"
 
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
-	"github.com/telegrapher/vrb"
 )
 
 func RootCmd(version string) *cobra.Command {
@@ -29,8 +29,8 @@ func RootCmd(version string) *cobra.Command {
 		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
 		Version: version,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			if verbose {
-				vrb.Init(os.Stderr)
+			if !verbose {
+				log.SetOutput(ioutil.Discard)
 			}
 			// This call of the initParams will load all env vars, config file and flags.
 			return initParams(cmd, imsConfig, configFile)
