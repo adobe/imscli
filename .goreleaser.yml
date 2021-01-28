@@ -1,30 +1,45 @@
-# This is an example .goreleaser.yml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
+project_name: imscli
 before:
   hooks:
-    # You may remove this if you don't use go modules.
-    - go mod download
+    - go mod tidy
 builds:
-  - env:
+  - id: imscli
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
       - darwin
+    goarch:
+      - amd64
 archives:
   - replacements:
-      darwin: Darwin
+      darwin: macOS
       linux: Linux
       windows: Windows
-      386: i386
-      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: "{{ .Version }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+nfpms:
+  - file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    homepage:  "https://github.com/adobe/imscli"
+    description: "A small CLI tool to interact with the Adobe IMS API"
+    maintainer: "Jose Antonio Insua <insuafer@adobe.com>"
+    license: "Apache 2.0"
+    vendor: "github.com/adobe"
+    section: default
+    priority: extra
+    formats:
+    - apk
+    - deb
+    - rpm
