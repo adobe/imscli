@@ -21,8 +21,8 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "profile",
-		Short: "Requests an user profile",
-		Long:  "Requests the user profile associated to the provided access token",
+		Short: "Requests an user profile.",
+		Long:  "Requests the user profile associated to the provided access token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true

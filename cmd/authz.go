@@ -17,9 +17,9 @@ import (
 
 func authzCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "authorize",
+		Use:     "authorize",
 		Aliases: []string{"authz"},
-		Short: "Negotiate an access token with IMS",
+		Short:   "Negotiate an access token with IMS.",
 		Long: `The authorize command negotiates an access token with IMS, performing one of the supported types of authorization.
 
 This command has no effect by itself, the authorization type needs to be specified as a subcommand.

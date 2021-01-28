@@ -21,8 +21,8 @@ func authzUserCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "user",
-		Short: "Negotiate a normal user access token",
-		Long:  `Perform the 'Authorization Code Grant Flow' by launching a browser and capturing the returned IMS token.`,
+		Short: "Negotiate a normal user access token.",
+		Long:  "Perform the 'Authorization Code Grant Flow' by launching a browser and capturing the returned IMS token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
