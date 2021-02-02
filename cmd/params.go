@@ -51,13 +51,17 @@ func initParams(cmd *cobra.Command, params *ims.Config, configFile string) error
 		v.AddConfigPath(".")
 		v.AddConfigPath(configDir)
 		v.SetConfigName("imscli")
+		err = v.ReadInConfig()
+		if err != nil {
+			// Ignore ConfigFileNotFoundError, since config file is not mandatory
+			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+				return fmt.Errorf("unable to read configuration file: %v", err)
+			}
+		}
 	} else {
 		v.SetConfigFile(configFile)
-	}
-	err = v.ReadInConfig()
-	if err != nil {
-		// Ignore ConfigFileNotFoundError, since config file is not mandatory
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+		err = v.ReadInConfig()
+		if err != nil {
 			return fmt.Errorf("unable to read configuration file: %v", err)
 		}
 	}
