@@ -17,7 +17,7 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-func (i Config) validateGetProfileConfig() error {
+func (i Config) validateGetOrganizationsConfig() error {
 	switch {
 	case i.AccessToken == "":
 		return fmt.Errorf("missing access token parameter")
@@ -32,11 +32,11 @@ func (i Config) validateGetProfileConfig() error {
 /*
  * GetProfile requests the user profile using an access token.
  */
-func (i Config) GetProfile() (string, error) {
+func (i Config) GetOrganizations() (string, error) {
 
-	err := i.validateGetProfileConfig()
+	err := i.validateGetOrganizationsConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for profile: %v", err)
+		return "", fmt.Errorf("invalid parameters for organizations: %v", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -46,7 +46,7 @@ func (i Config) GetProfile() (string, error) {
 		return "", fmt.Errorf("error creating the client: %v", err)
 	}
 
-	profile, err := c.GetProfile(&ims.GetProfileRequest{
+	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
 		AccessToken: i.AccessToken,
 		ApiVersion: i.ApiVersion,
 	})
@@ -54,5 +54,5 @@ func (i Config) GetProfile() (string, error) {
 		return "", err
 	}
 
-	return string(profile.Body), nil
+	return string(organizations.Body), nil
 }

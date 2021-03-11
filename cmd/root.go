@@ -43,6 +43,7 @@ func RootCmd(version string) *cobra.Command {
 	cmd.AddCommand(
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
+		organizationsCmd(imsConfig),
 	)
 	return cmd
 }

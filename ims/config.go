@@ -25,6 +25,7 @@ type Config struct {
 	Scopes         []string
 	Metascopes     []string
 	AccessToken    string
+	ApiVersion	   string
 	Timeout        int
 }
 

@@ -17,19 +17,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func profileCmd(imsConfig *ims.Config) *cobra.Command {
+func organizationsCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:   "profile",
-		Short: "Requests an user profile.",
-		Long:  "Requests the user profile associated to the provided access token.",
+		Use:     "organizations",
+		Aliases: []string{"orgs"},
+		Short:   "Requests the user organizations.",
+		Long:    "Requests the user organizations associated to the provided access token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.GetProfile()
+			resp, err := imsConfig.GetOrganizations()
 			if err != nil {
-				return fmt.Errorf("error in get profile cmd: %v", err)
+				return fmt.Errorf("error in get organizations cmd: %v", err)
 			}
 			fmt.Println(resp)
 			return nil
@@ -37,7 +38,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
-	cmd.Flags().StringVarP(&imsConfig.ApiVersion, "apiVersion", "a", "v1", "API version.")
+	cmd.Flags().StringVarP(&imsConfig.ApiVersion, "apiVersion", "a", "v5", "API version.")
 
 	return cmd
 }
