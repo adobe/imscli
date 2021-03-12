@@ -47,7 +47,7 @@ func (i Config) GetProfile() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error creating the client: %v", err)
 	}
-	fmt.Println(i.ProfileApiVersion)
+
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
 		AccessToken: i.AccessToken,
 		ApiVersion: i.ProfileApiVersion,
