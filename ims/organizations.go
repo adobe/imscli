@@ -23,6 +23,8 @@ func (i Config) validateGetOrganizationsConfig() error {
 		return fmt.Errorf("missing access token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case i.OrgsApiVersion == "":
+		return fmt.Errorf("missing API version parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
@@ -48,7 +50,7 @@ func (i Config) GetOrganizations() (string, error) {
 
 	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion: i.ApiVersion,
+		ApiVersion: i.OrgsApiVersion,
 	})
 	if err != nil {
 		return "", err

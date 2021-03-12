@@ -15,18 +15,19 @@ import (
 )
 
 type Config struct {
-	URL            string
-	ClientID       string
-	ClientSecret   string
-	ServiceToken   string
-	PrivateKeyPath string
-	Organization   string
-	Account        string
-	Scopes         []string
-	Metascopes     []string
-	AccessToken    string
-	ApiVersion	   string
-	Timeout        int
+	URL               string
+	ClientID          string
+	ClientSecret      string
+	ServiceToken      string
+	PrivateKeyPath    string
+	Organization      string
+	Account           string
+	Scopes            []string
+	Metascopes        []string
+	AccessToken       string
+	ProfileApiVersion string
+	OrgsApiVersion    string
+	Timeout           int
 }
 
 type TokenInfo struct {
