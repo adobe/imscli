@@ -28,6 +28,8 @@ type Config struct {
 	ProfileApiVersion string
 	OrgsApiVersion    string
 	Timeout           int
+	ProxyURL          string
+	ProxyIgnoreTLS    bool
 }
 
 type TokenInfo struct {

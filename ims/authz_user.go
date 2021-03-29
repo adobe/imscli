@@ -64,15 +64,21 @@ func (i Config) AuthorizeUser() (string, error) {
 		return "", fmt.Errorf("invalid parameters for login user: %v", err)
 	}
 
-	client, err := ims.NewClient(&ims.ClientConfig{
+	httpClient, err := i.httpClient()
+	if err != nil {
+		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+	}
+
+	c, err := ims.NewClient(&ims.ClientConfig{
 		URL: i.URL,
+		Client: httpClient,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error during client creation: %v", err)
 	}
 
 	server, err := login.NewServer(&login.ServerConfig{
-		Client:       client,
+		Client:       c,
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,

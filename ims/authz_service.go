@@ -20,8 +20,15 @@ import (
  * AuthorizeService : Login for the service to service IMS flow
  */
 func (i Config) AuthorizeService() (string, error) {
+
+	httpClient, err := i.httpClient()
+	if err != nil {
+		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+	}
+
 	c, err := ims.NewClient(&ims.ClientConfig{
 		URL: i.URL,
+		Client: httpClient,
 	})
 	if err != nil {
 		return "", fmt.Errorf("create client: %v", err)

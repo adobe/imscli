@@ -20,8 +20,14 @@ import (
 
 func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
+	httpClient, err := i.httpClient()
+	if err != nil {
+		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
+	}
+
 	c, err := ims.NewClient(&ims.ClientConfig{
 		URL: i.URL,
+		Client: httpClient,
 	})
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("create client: %v", err)
