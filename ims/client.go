@@ -9,7 +9,7 @@ import (
 )
 
 // Create a http client based on the received configuration.
-func (i Config) httpClient() (*http.Client,error) {
+func (i Config) httpClient() (*http.Client, error) {
 
 	if i.ProxyURL != "" {
 		p, err := url.Parse(i.ProxyURL)
@@ -33,4 +33,3 @@ func (i Config) httpClient() (*http.Client,error) {
 	}
 	return client, nil
 }
-

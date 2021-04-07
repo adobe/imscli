@@ -40,15 +40,16 @@ func RootCmd(version string) *cobra.Command {
 	cmd.PersistentFlags().StringVarP(&imsConfig.URL, "url", "u", "https://ims-na1.adobelogin.com",
 		"IMS Endpoint URL.")
 	cmd.PersistentFlags().StringVarP(&imsConfig.ProxyURL, "proxyUrl", "P", "",
-		"Connect to IMS through the specified proxy. Specified as http(s)://host:port." )
+		"Connect to IMS through the specified proxy. Specified as http(s)://host:port.")
 	cmd.PersistentFlags().BoolVarP(&imsConfig.ProxyIgnoreTLS, "proxyIgnoreTLS", "T", false,
-		"Ignore TLS certificate verification (only valid when connecting through a proxy)." )
+		"Ignore TLS certificate verification (only valid when connecting through a proxy).")
 	cmd.PersistentFlags().StringVarP(&configFile, "configFile", "f", "", "Configuration file.")
 
 	cmd.AddCommand(
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),
+		validateCmd(imsConfig),
 	)
 	return cmd
 }

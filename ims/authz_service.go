@@ -27,7 +27,7 @@ func (i Config) AuthorizeService() (string, error) {
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
-		URL: i.URL,
+		URL:    i.URL,
 		Client: httpClient,
 	})
 	if err != nil {

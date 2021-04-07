@@ -20,7 +20,7 @@ import (
 func authzJWTCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "jwt",
-		Short: "Negotiate a JWT token.",
+		Short: "Exchange a JWT for an access token.",
 		Long:  "Perform the 'Assertion Grant Type Flow' to request a token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true

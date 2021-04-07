@@ -50,7 +50,7 @@ func (i Config) GetProfile() (string, error) {
 
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion: i.ProfileApiVersion,
+		ApiVersion:  i.ProfileApiVersion,
 	})
 	if err != nil {
 		return "", err

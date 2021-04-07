@@ -47,7 +47,7 @@ func (i Config) GetOrganizations() (string, error) {
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
-		URL: i.URL,
+		URL:    i.URL,
 		Client: httpClient,
 	})
 	if err != nil {
@@ -56,7 +56,7 @@ func (i Config) GetOrganizations() (string, error) {
 
 	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion: i.OrgsApiVersion,
+		ApiVersion:  i.OrgsApiVersion,
 	})
 	if err != nil {
 		return "", err
