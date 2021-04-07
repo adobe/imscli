@@ -27,7 +27,7 @@ func validateAccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.AuthorizeJWTExchange()
+			resp, err := imsConfig.ValidateToken()
 			if err != nil {
 				return fmt.Errorf("error validating the access token: %v", err)
 			}
