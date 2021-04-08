@@ -12,8 +12,9 @@ package ims
 
 import (
 	"fmt"
-	"github.com/adobe/ims-go/ims"
 	"log"
+
+	"github.com/adobe/ims-go/ims"
 )
 
 /*
@@ -25,7 +26,7 @@ import (
 func (i Config) validateValidateTokenConfig() error {
 
 	switch {
-	case i.ClientID == "" :
+	case i.ClientID == "":
 		return fmt.Errorf("missing clientID parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
@@ -46,20 +47,17 @@ func (i Config) validateValidateTokenConfig() error {
 	}
 }
 
-
-/*
- * Validate the Token provided in the configuration using the IMS API.
- * Return the endpoint response or an error.
- */
-func (i Config) ValidateToken() (string,error) {
+// ValidateToken Validates the token provided in the configuration using the IMS API.
+// Return the endpoint response or an error.
+func (i Config) ValidateToken() (string, error) {
 	// Perform parameter validation
 	err := i.validateValidateTokenConfig()
-	if err!=nil {
+	if err != nil {
 		return "", fmt.Errorf("invalid parameters for token validation: %v", err)
 	}
 
 	httpClient, err := i.httpClient()
-	if err!= nil {
+	if err != nil {
 		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
 	}
 
@@ -71,33 +69,34 @@ func (i Config) ValidateToken() (string,error) {
 		return "", fmt.Errorf("create client: %v", err)
 	}
 
-	var token, tokenType string
+	var token string
+	var tokenType ims.TokenType
 
 	switch {
 	case i.AccessToken != "":
 		token = i.AccessToken
-		tokenType = "access_token"
+		tokenType = ims.AccessToken
 	case i.RefreshToken != "":
 		token = i.RefreshToken
-		tokenType = "refresh_token"
+		tokenType = ims.RefreshToken
 	case i.DeviceToken != "":
 		token = i.DeviceToken
-		tokenType = "device_token"
+		tokenType = ims.DeviceToken
 	case i.AuthorizationCode != "":
 		token = i.AuthorizationCode
-		tokenType = "authorization_code"
+		tokenType = ims.AuthorizationCode
 	default:
 		return "", fmt.Errorf("unexpected error, broken validation")
 	}
 
 	r, err := c.ValidateToken(&ims.ValidateTokenRequest{
-		Token: token,
-		Type: tokenType,
+		Token:    token,
+		Type:     tokenType,
 		ClientID: i.ClientID,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error during token validation: %v", err)
 	}
 
-	return r,nil
+	return string(r.Body), nil
 }
