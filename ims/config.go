@@ -38,6 +38,8 @@ type Config struct {
 type TokenInfo struct {
 	AccessToken string
 	Expires     int //(response.ExpiresIn * time.Millisecond),
+	Valid       bool
+	Info        string
 }
 
 func validateURL(u string) bool {

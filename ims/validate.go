@@ -49,16 +49,16 @@ func (i Config) validateValidateTokenConfig() error {
 
 // ValidateToken Validates the token provided in the configuration using the IMS API.
 // Return the endpoint response or an error.
-func (i Config) ValidateToken() (string, error) {
+func (i Config) ValidateToken() (TokenInfo, error) {
 	// Perform parameter validation
 	err := i.validateValidateTokenConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for token validation: %v", err)
+		return TokenInfo{}, fmt.Errorf("invalid parameters for token validation: %v", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -66,7 +66,7 @@ func (i Config) ValidateToken() (string, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return "", fmt.Errorf("create client: %v", err)
+		return TokenInfo{}, fmt.Errorf("create client: %v", err)
 	}
 
 	var token string
@@ -86,7 +86,7 @@ func (i Config) ValidateToken() (string, error) {
 		token = i.AuthorizationCode
 		tokenType = ims.AuthorizationCode
 	default:
-		return "", fmt.Errorf("unexpected error, broken validation")
+		return TokenInfo{}, fmt.Errorf("unexpected error, broken validation")
 	}
 
 	r, err := c.ValidateToken(&ims.ValidateTokenRequest{
@@ -95,8 +95,11 @@ func (i Config) ValidateToken() (string, error) {
 		ClientID: i.ClientID,
 	})
 	if err != nil {
-		return "", fmt.Errorf("error during token validation: %v", err)
+		return TokenInfo{}, fmt.Errorf("error during token validation: %v", err)
 	}
 
-	return string(r.Body), nil
+	return TokenInfo{
+		Valid: r.Valid,
+		Info:  string(r.Body),
+	}, nil
 }

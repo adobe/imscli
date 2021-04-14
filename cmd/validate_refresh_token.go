@@ -31,7 +31,10 @@ func validateRefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error validating the refresh token: %v", err)
 			}
-			fmt.Println(resp)
+			if !resp.Valid {
+				return fmt.Errorf("invalid token: %v", resp.Info)
+			}
+			fmt.Println(resp.Info)
 			return nil
 		},
 	}
