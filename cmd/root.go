@@ -37,7 +37,7 @@ func RootCmd(version string) *cobra.Command {
 		},
 	}
 	cmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output.")
-	cmd.PersistentFlags().StringVarP(&imsConfig.URL, "url", "u", "https://ims-na1.adobelogin.com",
+	cmd.PersistentFlags().StringVarP(&imsConfig.URL, "url", "U", "https://ims-na1.adobelogin.com",
 		"IMS Endpoint URL.")
 	cmd.PersistentFlags().StringVarP(&imsConfig.ProxyURL, "proxyUrl", "P", "",
 		"Connect to IMS through the specified proxy. Specified as http(s)://host:port.")
@@ -50,6 +50,7 @@ func RootCmd(version string) *cobra.Command {
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),
 		validateCmd(imsConfig),
+		exchangeCmd(imsConfig),
 	)
 	return cmd
 }
