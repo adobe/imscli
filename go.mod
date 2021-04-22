@@ -12,10 +12,8 @@ module github.com/adobe/imscli
 
 go 1.15
 
-replace github.com/adobe/ims-go => /home/ungoliant/repos/ims-go
-
 require (
-	github.com/adobe/ims-go v0.9.0
+	github.com/adobe/ims-go v0.10.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
