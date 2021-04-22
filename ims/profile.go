@@ -31,7 +31,6 @@ func (i Config) validateGetProfileConfig() error {
 	return nil
 }
 
-
 // GetProfile requests the user profile using an access token.
 func (i Config) GetProfile() (string, error) {
 
@@ -46,7 +45,7 @@ func (i Config) GetProfile() (string, error) {
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
-		URL: i.URL,
+		URL:    i.URL,
 		Client: httpClient,
 	})
 	if err != nil {
