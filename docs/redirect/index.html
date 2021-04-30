@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>imscli login redirection to localhost:8888</title>
+  </head>
+  <body>
+    <h1>If your browser is not automatically redirected, please click <a href="http://localhost:8888/">THIS link</a>.</h1>
+    <script>
+        location.replace(window.location.href.replace("https://github.com/pages/adobe/imscli/redirect/","http://localhost:8888/"));
+    </script>
+    <noscript>
+      <h1>This browser doesn't support javascript, get the URL and substitute "https://git.corp.adobe.com/pages/Evergreen/cmcli/" for "http://localhost:8888/".</h1>
+    </noscript>
+  </body>
+</html>
