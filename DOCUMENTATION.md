@@ -40,7 +40,7 @@ Provided an user's access token, gathers the user organizations.
 
 ### Exchange
 
-Performs the "cluster authorization token exchange" flow", exchanging a valid token for another valid token for the
+Performs the "cluster authorization token exchange flow", exchanging a valid access token for another access token for the
 same user in a different IMS Org.
 
 ### Validate
