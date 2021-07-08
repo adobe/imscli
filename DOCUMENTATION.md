@@ -10,21 +10,21 @@ Any other output like verbose output or errors will be sent to *stderr* to not i
 The command will return 0 in case of success or 1 in case of an error.
 
 ## Subcommands
-### Login
+### Authorize
 
 imscli login will negotiate an ***OAuth2 access token*** with IMS following the required ***Oauth2 flow***.
 
-#### imscli login user (standard Authorization Code Grant Flow)
+#### imscli authorize user (standard Authorization Code Grant Flow)
 
 This command will launch a browser and execute the normal OAuth2 flow done by users when log into IMS to use a service.
 
-#### imscli login service (a modified Client Credentials Grant Flow).
+#### imscli authz service (a modified Client Credentials Grant Flow).
 
-The imscli client will exchange client credentials and an additional service token to obtain the access token. 
+The imscli client will exchange client credentials and an additional service token to obtain the access token.
 
 It is used to access an "Application", an Adobe API exposed through Adobe I/O Gateway.
 
-#### imscli login jwt (JWT Bearer Flow).
+#### imscli authz jwt (JWT Bearer Flow).
 
 This command will build a JWT will all specified claims, sign it with a private key and exchange it for an access token.
 
@@ -33,6 +33,19 @@ It is used for "Adobe I/O" integrations.
 ### Profile
 
 Provided an user's access token, gathers the user profile.
+
+### Organizations
+
+Provided an user's access token, gathers the user organizations.
+
+### Exchange
+
+Performs the "cluster authorization token exchange flow", exchanging a valid access token for another access token for the
+same user in a different IMS Org.
+
+### Validate
+
+Validates a token using the IMS API.
 
 
 ## Configuration
