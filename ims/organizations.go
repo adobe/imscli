@@ -18,22 +18,25 @@ import (
 )
 
 func (i Config) validateGetOrganizationsConfig() error {
+
+	switch i.OrgsApiVersion{
+	case "v1", "v2", "v3", "v4", "v5", "v6":
+	default:
+		return fmt.Errorf("invalid API version parameter, use something like v5")
+	}
+
 	switch {
 	case i.AccessToken == "":
 		return fmt.Errorf("missing access token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
-	case i.OrgsApiVersion == "":
-		return fmt.Errorf("missing API version parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
 	return nil
 }
 
-/*
- * GetProfile requests the user profile using an access token.
- */
+// GetOrganizations requests the user's organizations using an access token.
 func (i Config) GetOrganizations() (string, error) {
 
 	err := i.validateGetOrganizationsConfig()
