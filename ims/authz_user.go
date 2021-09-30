@@ -108,6 +108,9 @@ func (i Config) AuthorizeUser() (string, error) {
 
 	localUrl := fmt.Sprintf("http://localhost:%d/", port)
 
+    // redirect stdout to avoid "Opening in existing browser session." message from chromium
+    browser.Stdout = nil
+
 	err = browser.OpenURL(localUrl)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error launching the browser, open it and visit %s\n", localUrl)
