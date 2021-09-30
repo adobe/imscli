@@ -19,7 +19,7 @@ import (
 
 func (i Config) validateGetOrganizationsConfig() error {
 
-	switch i.OrgsApiVersion{
+	switch i.OrgsApiVersion {
 	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
 		return fmt.Errorf("invalid API version parameter, use something like v5")
