@@ -11,26 +11,33 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
 
-func validateCmd(imsConfig *ims.Config) *cobra.Command {
-
+func invalidateAccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "validate",
-		Aliases: []string{"val"},
-		Short:   "Validates a token using the IMS API.",
-		Long: `Verifies if the specified IMS token is valid using the IMS API.
+		Use:     "accessToken",
+		Aliases: []string{"acc"},
+		Short:   "Invalidate an access token.",
+		Long:    "Invalidate an access token.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.SilenceUsage = true
+			cmd.SilenceErrors = true
 
-This command has no effect by itself, the token type must be specified as a subcommand.
-`,
+			err := imsConfig.InvalidateToken()
+			if err != nil {
+				return fmt.Errorf("error invalidating the access token: %v", err)
+			}
+			fmt.Println("Token invalidated successfully.")
+			return nil
+		},
 	}
-	cmd.AddCommand(
-		validateAccessTokenCmd(imsConfig),
-		validateRefreshTokenCmd(imsConfig),
-		validateDeviceTokenCmd(imsConfig),
-		validateAuthzCodeCmd(imsConfig),
-	)
+
+	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
+	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
+
 	return cmd
 }

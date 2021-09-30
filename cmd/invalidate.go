@@ -15,22 +15,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func validateCmd(imsConfig *ims.Config) *cobra.Command {
+func invalidateCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "validate",
-		Aliases: []string{"val"},
-		Short:   "Validates a token using the IMS API.",
-		Long: `Verifies if the specified IMS token is valid using the IMS API.
+		Use:     "invalidate",
+		Aliases: []string{"inv"},
+		Short:   "Invalidates a token using the IMS API.",
+		Long: `Invalidates a token using the IMS API.
 
 This command has no effect by itself, the token type must be specified as a subcommand.
 `,
 	}
 	cmd.AddCommand(
-		validateAccessTokenCmd(imsConfig),
-		validateRefreshTokenCmd(imsConfig),
-		validateDeviceTokenCmd(imsConfig),
-		validateAuthzCodeCmd(imsConfig),
+		invalidateAccessTokenCmd(imsConfig),
+		invalidateRefreshTokenCmd(imsConfig),
+		invalidateDeviceTokenCmd(imsConfig),
+		invalidateServiceTokenCmd(imsConfig),
 	)
 	return cmd
 }
