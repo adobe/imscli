@@ -30,13 +30,21 @@ This command will build a JWT will all specified claims, sign it with a private 
 
 It is used for "Adobe I/O" integrations.
 
+### Completion
+
+Generate a script to enable autocompletion for imscli. 
+
+To configure bash, add the following line to your .bashrc (or alternative config file):
+
+    eval "$(imscli autocompletion bash)"
+
 ### Profile
 
-Provided an user's access token, gathers the user profile.
+Provided a user's access token, gathers the user profile.
 
 ### Organizations
 
-Provided an user's access token, gathers the user organizations.
+Provided a user's access token, gathers the user organizations.
 
 ### Exchange
 
@@ -46,6 +54,10 @@ same user in a different IMS Org.
 ### Validate
 
 Validates a token using the IMS API.
+
+### Invalidate
+
+Invalidates a token using the IMS API.
 
 
 ## Configuration
