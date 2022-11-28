@@ -12,13 +12,13 @@ The command will return 0 in case of success or 1 in case of an error.
 ## Subcommands
 ### Authorize
 
-imscli login will negotiate an ***OAuth2 access token*** with IMS following the required ***Oauth2 flow***.
+imscli login will negotiate an ***access token*** with IMS following the specified ***flow***.
 
 #### imscli authorize user (standard Authorization Code Grant Flow)
 
 This command will launch a browser and execute the normal OAuth2 flow done by users when log into IMS to use a service.
 
-#### imscli authz service (a modified Client Credentials Grant Flow).
+#### imscli authz service (an IMS specific flow similar to the Client Credentials Grant Flow).
 
 The imscli client will exchange client credentials and an additional service token to obtain the access token.
 
