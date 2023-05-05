@@ -12,6 +12,8 @@ module github.com/adobe/imscli
 
 go 1.15
 
+replace github.com/adobe/ims-go => ../ims-go
+
 require (
 	github.com/adobe/ims-go v0.11.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
