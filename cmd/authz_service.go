@@ -20,7 +20,7 @@ import (
 func authzServiceCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "service",
-		Short: "Negotiate authorization as a service.",
+		Short: "Negotiate a service to service token.",
 		Long:  "Perform the 'Client Credential Authorization Flow' to negotiate an access token for a service.'",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true

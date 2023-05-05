@@ -29,7 +29,7 @@ This command has no effect by itself, the authorization type needs to be specifi
 		authzUserCmd(imsConfig),
 		authzServiceCmd(imsConfig),
 		authzJWTCmd(imsConfig),
-		authzOAuthCmd(imsConfig),
+		authzClientCredentialsCmd(imsConfig),
 	)
 	return cmd
 }

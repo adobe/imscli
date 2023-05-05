@@ -17,16 +17,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func authzOAuthCmd(imsConfig *ims.Config) *cobra.Command {
+func authzClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "oauth",
-		Short: "Negotiate authorization using OAuth Server-to-Server.",
-		Long:  "Perform the 'Client Credential Authorization Flow' to negotiate an access token for a service.'",
+		Use:     "clientCredentials",
+		Aliases: []string{"client"},
+		Short:   "Negotiate a service to service access token using a technical account.",
+		Long:    "Perform the 'Client Credentials Authorization Flow' to negotiate an access token for a service.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.AuthorizeOAuth()
+			resp, err := imsConfig.AuthorizeClientCredentials()
 			if err != nil {
 				return fmt.Errorf("error in login service: %v", err)
 			}
