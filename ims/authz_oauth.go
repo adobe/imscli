@@ -16,10 +16,8 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-/*
- * AuthorizeOAuth : Login for the OAuth server to server IMS flow
- */
-func (i Config) AuthorizeOAuth() (string, error) {
+// AuthorizeClientCredentials : Client Credentials OAuth flow
+func (i Config) AuthorizeClientCredentials() (string, error) {
 
 	httpClient, err := i.httpClient()
 	if err != nil {
