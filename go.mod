@@ -13,7 +13,7 @@ module github.com/adobe/imscli
 go 1.19
 
 require (
-	github.com/adobe/ims-go v0.14.0
+	github.com/adobe/ims-go v0.14.1
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
