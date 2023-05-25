@@ -82,6 +82,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
+		RedirectURI:  "http://localhost:8888",
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
 				<h1>An error occurred</h1>
@@ -108,8 +109,8 @@ func (i Config) AuthorizeUser() (string, error) {
 
 	localUrl := fmt.Sprintf("http://localhost:%d/", port)
 
-    // redirect stdout to avoid "Opening in existing browser session." message from chromium
-    browser.Stdout = nil
+	// redirect stdout to avoid "Opening in existing browser session." message from chromium
+	browser.Stdout = nil
 
 	err = browser.OpenURL(localUrl)
 	if err != nil {

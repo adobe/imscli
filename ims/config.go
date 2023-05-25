@@ -35,7 +35,8 @@ type Config struct {
 	ProxyIgnoreTLS    bool
 	UserID            string
 	Cascading         bool
-	Token			  string
+	Token             string
+	Port              int
 }
 
 type TokenInfo struct {
