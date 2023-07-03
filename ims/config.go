@@ -33,6 +33,7 @@ type Config struct {
 	Timeout           int
 	ProxyURL          string
 	ProxyIgnoreTLS    bool
+	PublicClient      bool
 	UserID            string
 	Cascading         bool
 	Token             string

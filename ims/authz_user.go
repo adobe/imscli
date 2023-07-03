@@ -42,10 +42,13 @@ func (i Config) validateAuthorizeUserConfig() error {
 		return fmt.Errorf("missing scopes parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client id parameter")
-	case i.ClientSecret == "":
-		return fmt.Errorf("missing client secret parameter")
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
+	case i.ClientSecret == "":
+		if i.PublicClient {
+			log.Println("all needed parameters verified not empty")
+		}
+		return fmt.Errorf("missing client secret parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
@@ -53,10 +56,8 @@ func (i Config) validateAuthorizeUserConfig() error {
 	return nil
 }
 
-/*
- * AuthorizeUser uses the standard Oauth2 authorization code grant flow. The Oauth2 configuration is
- * taken from the Config struct.
- */
+// AuthorizeUser uses the standard Oauth2 authorization code grant flow. The Oauth2 configuration is
+// taken from the Config struct.
 func (i Config) AuthorizeUser() (string, error) {
 	// Perform parameter validation
 	err := i.validateAuthorizeUserConfig()
