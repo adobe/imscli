@@ -27,6 +27,7 @@ This command has no effect by itself, the authorization type needs to be specifi
 	}
 	cmd.AddCommand(
 		authzUserCmd(imsConfig),
+		authzUserPkceCmd(imsConfig),
 		authzServiceCmd(imsConfig),
 		authzJWTCmd(imsConfig),
 		authzClientCredentialsCmd(imsConfig),

@@ -38,6 +38,7 @@ type Config struct {
 	Cascading         bool
 	Token             string
 	Port              int
+	PKCE              bool
 }
 
 type TokenInfo struct {

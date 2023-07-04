@@ -45,8 +45,9 @@ func (i Config) validateAuthorizeUserConfig() error {
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
 	case i.ClientSecret == "":
-		if i.PublicClient {
+		if i.PublicClient == true {
 			log.Println("all needed parameters verified not empty")
+			return nil
 		}
 		return fmt.Errorf("missing client secret parameter")
 	default:
@@ -83,6 +84,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
+		UsePKCE:      i.PKCE,
 		RedirectURI:  "http://localhost:8888",
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
@@ -111,6 +113,7 @@ func (i Config) AuthorizeUser() (string, error) {
 	localUrl := fmt.Sprintf("http://localhost:%d/", port)
 
 	// redirect stdout to avoid "Opening in existing browser session." message from chromium
+	// The token is expected in stdout and this type of messages disrupt scripts
 	browser.Stdout = nil
 
 	err = browser.OpenURL(localUrl)
@@ -127,7 +130,7 @@ func (i Config) AuthorizeUser() (string, error) {
 
 	select {
 	case serr = <-server.Error():
-		log.Println("The IMS HTTP handler returned a message.")
+		log.Println("The IMS HTTP handler returned an error message.")
 	case resp = <-server.Response():
 		log.Println("The IMS HTTP handler returned a message.")
 	case <-time.After(time.Minute * 5):
