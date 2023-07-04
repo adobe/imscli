@@ -1,6 +1,7 @@
 # imscli
 ![CodeQL](https://github.com/adobe/imscli/workflows/CodeQL/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adobe/imscli)](https://goreportcard.com/report/github.com/adobe/imscli)
+[![Release with GoReleaser](https://github.com/adobe/imscli/actions/workflows/main.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/main.yml)
 
 This project is a small CLI tool to interact with the IMS API. The goal of this project
 is to provide a small tool that can be used to troubleshoot integrations with IMS.
