@@ -45,6 +45,10 @@ func (i Config) validateAuthorizeUserConfig() error {
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
 	case i.ClientSecret == "":
+		if i.PublicClient == true {
+			log.Println("all needed parameters verified not empty")
+			return nil
+		}
 		return fmt.Errorf("missing client secret parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
@@ -80,6 +84,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
+		UsePKCE:      i.PKCE,
 		RedirectURI:  "http://localhost:8888",
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `

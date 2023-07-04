@@ -27,6 +27,7 @@ func authzUserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
+			imsConfig.PKCE = true
 			resp, err := imsConfig.AuthorizeUser()
 			if err != nil {
 				return fmt.Errorf("error in user authorization: %v", err)
