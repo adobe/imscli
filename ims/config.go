@@ -39,6 +39,7 @@ type Config struct {
 	Token             string
 	Port              int
 	PKCE              bool
+	FullOutput        bool
 }
 
 // Access token information

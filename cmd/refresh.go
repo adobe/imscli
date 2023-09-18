@@ -11,6 +11,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/adobe/imscli/ims"
@@ -31,7 +32,19 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error during the token refresh: %v", err)
 			}
-			fmt.Println(resp)
+			if imsConfig.FullOutput {
+				data := map[string]interface{}{
+					"access_token":  resp.AccessToken,
+					"refresh_token": resp.RefreshToken,
+				}
+				jsonData, err := json.MarshalIndent(data, "", "  ")
+				if err != nil {
+					return fmt.Errorf("error marshalling full JSON response: %v", err)
+				}
+				fmt.Printf("%s", jsonData)
+				return nil
+			}
+			fmt.Println(resp.AccessToken)
 			return nil
 		},
 	}
@@ -41,7 +54,8 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "refreshToken", "t", "", "Refresh token.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
-			"scopes are requested the same scopes of the original token will be provided")
+			"scopes are requested the same scopes of the original token will be provided.")
+	cmd.Flags().BoolVarP(&imsConfig.FullOutput, "fullOutput", "F", false, "Output a JSON with access and refresh tokens.")
 
 	return cmd
 }
