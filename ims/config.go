@@ -39,13 +39,20 @@ type Config struct {
 	Token             string
 	Port              int
 	PKCE              bool
+	FullOutput        bool
 }
 
+// Access token information
 type TokenInfo struct {
 	AccessToken string
 	Expires     int //(response.ExpiresIn * time.Millisecond),
 	Valid       bool
 	Info        string
+}
+
+type RefreshInfo struct {
+	TokenInfo
+	RefreshToken string
 }
 
 func validateURL(u string) bool {
