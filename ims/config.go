@@ -28,7 +28,8 @@ type Config struct {
 	DeviceToken       string
 	ServiceToken      string
 	AuthorizationCode string
-	ApiVersion        string
+	ProfileApiVersion string
+	OrgsApiVersion    string
 	Timeout           int
 	ProxyURL          string
 	ProxyIgnoreTLS    bool

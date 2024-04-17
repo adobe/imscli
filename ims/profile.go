@@ -18,13 +18,17 @@ import (
 )
 
 func (i Config) validateGetProfileConfig() error {
+	switch i.ProfileApiVersion {
+	case "v1", "v2", "v3":
+	default:
+		return fmt.Errorf("invalid API version parameter, latest version is v3")
+	}
+
 	switch {
 	case i.AccessToken == "":
 		return fmt.Errorf("missing access token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
-	case i.ApiVersion == "":
-		return fmt.Errorf("missing API version parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
@@ -54,7 +58,7 @@ func (i Config) GetProfile() (string, error) {
 
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion:  i.ApiVersion,
+		ApiVersion:  i.ProfileApiVersion,
 	})
 	if err != nil {
 		return "", err

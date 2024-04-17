@@ -18,13 +18,17 @@ import (
 )
 
 func (i Config) validateGetAdminProfileConfig() error {
+	switch i.ProfileApiVersion {
+	case "v1", "v2", "v3":
+	default:
+		return fmt.Errorf("invalid API version parameter, latest version is v3")
+	}
+
 	switch {
 	case i.ServiceToken == "":
 		return fmt.Errorf("missing service token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
-	case i.ApiVersion == "":
-		return fmt.Errorf("missing API version parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client ID parameter")
 	case i.Guid == "":
@@ -61,7 +65,7 @@ func (i Config) GetAdminProfile() (string, error) {
 
 	profile, err := c.GetAdminProfile(&ims.GetAdminProfileRequest{
 		ServiceToken: i.ServiceToken,
-		ApiVersion:   i.ApiVersion,
+		ApiVersion:   i.ProfileApiVersion,
 		ClientID:     i.ClientID,
 		Guid:         i.Guid,
 		AuthSrc:      i.AuthSrc,

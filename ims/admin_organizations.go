@@ -19,10 +19,10 @@ import (
 
 func (i Config) validateGetAdminOrganizationsConfig() error {
 
-	switch i.ApiVersion {
+	switch i.OrgsApiVersion {
 	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
-		return fmt.Errorf("invalid API version parameter, use something like v5")
+		return fmt.Errorf("invalid API version parameter, latest version is v6")
 	}
 
 	switch {
@@ -66,7 +66,7 @@ func (i Config) GetAdminOrganizations() (string, error) {
 
 	organizations, err := c.GetAdminOrganizations(&ims.GetAdminOrganizationsRequest{
 		ServiceToken: i.ServiceToken,
-		ApiVersion:   i.ApiVersion,
+		ApiVersion:   i.OrgsApiVersion,
 		ClientID:     i.ClientID,
 		Guid:         i.Guid,
 		AuthSrc:      i.AuthSrc,
