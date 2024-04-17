@@ -36,11 +36,9 @@ func invalidateServiceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "serviceToken", "t", "", "Service token.")
+	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "s", "", "IMS Client Secret.")
-	cmd.Flags().BoolVarP(&imsConfig.Cascading, "cascading", "a", false,
-		"Also invalidate all tokens obtained with the refresh token.")
 
 	return cmd
 }

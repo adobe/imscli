@@ -23,7 +23,7 @@ func adminOrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 		Use:     "organizations",
 		Aliases: []string{"orgs"},
 		Short:   "Requests the user organizations using the admin API.",
-		Long:    "Requests the specified user organizations uisng the admin API and a service token.",
+		Long:    "Requests the specified user organizations using the admin API and a service token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true

@@ -16,9 +16,7 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-/*
- * AuthorizeService : Login for the service to service IMS flow
- */
+// AuthorizeService : Login for the service to service IMS flow
 func (i Config) AuthorizeService() (string, error) {
 
 	httpClient, err := i.httpClient()
@@ -37,7 +35,7 @@ func (i Config) AuthorizeService() (string, error) {
 	r, err := c.Token(&ims.TokenRequest{
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
-		Code:         i.ServiceToken,
+		Code:         i.AuthorizationCode,
 	})
 	if err != nil {
 		return "", fmt.Errorf("request token: %v", err)
