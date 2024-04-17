@@ -28,8 +28,7 @@ type Config struct {
 	RefreshToken      string
 	DeviceToken       string
 	AuthorizationCode string
-	ProfileApiVersion string
-	OrgsApiVersion    string
+	ApiVersion        string
 	Timeout           int
 	ProxyURL          string
 	ProxyIgnoreTLS    bool
@@ -40,6 +39,8 @@ type Config struct {
 	Port              int
 	PKCE              bool
 	FullOutput        bool
+	Guid              string
+	AuthSrc           string
 }
 
 // Access token information

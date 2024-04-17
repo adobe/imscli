@@ -28,17 +28,19 @@ func adminOrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.GetOrganizations()
+			resp, err := imsConfig.GetAdminOrganizations()
 			if err != nil {
-				return fmt.Errorf("error in get organizations cmd: %v", err)
+				return fmt.Errorf("error in get admin organizations cmd: %v", err)
 			}
 			fmt.Println(resp)
 			return nil
 		},
 	}
-
+	cmd.Flags().StringVarP(&imsConfig.Guid, "guid", "g", "", "User ID.")
+	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
+	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
-	cmd.Flags().StringVarP(&imsConfig.OrgsApiVersion, "orgsApiVersion", "a", "v5", "Organizations API version.")
+	cmd.Flags().StringVarP(&imsConfig.ApiVersion, "apiVersion", "a", "v5", "Admin organizations API version.")
 
 	return cmd
 }

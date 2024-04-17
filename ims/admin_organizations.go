@@ -19,7 +19,7 @@ import (
 
 func (i Config) validateGetAdminOrganizationsConfig() error {
 
-	switch i.OrgsApiVersion {
+	switch i.ApiVersion {
 	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
 		return fmt.Errorf("invalid API version parameter, use something like v5")
@@ -30,6 +30,13 @@ func (i Config) validateGetAdminOrganizationsConfig() error {
 		return fmt.Errorf("missing service token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case i.ClientID == "":
+		return fmt.Errorf("missing client ID parameter")
+	case i.Guid == "":
+		return fmt.Errorf("missing guid parameter")
+	case i.AuthSrc == "":
+		return fmt.Errorf("missing auth source parameter")
+
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
@@ -41,7 +48,7 @@ func (i Config) GetAdminOrganizations() (string, error) {
 
 	err := i.validateGetAdminOrganizationsConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for organizations: %v", err)
+		return "", fmt.Errorf("invalid parameters for admin organizations: %v", err)
 	}
 
 	httpClient, err := i.httpClient()
@@ -57,9 +64,12 @@ func (i Config) GetAdminOrganizations() (string, error) {
 		return "", fmt.Errorf("error creating the client: %v", err)
 	}
 
-	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
-		AccessToken: i.AccessToken,
-		ApiVersion:  i.OrgsApiVersion,
+	organizations, err := c.GetAdminOrganizations(&ims.GetAdminOrganizationsRequest{
+		ServiceToken: i.ServiceToken,
+		ApiVersion:   i.ApiVersion,
+		ClientID:     i.ClientID,
+		Guid:         i.Guid,
+		AuthSrc:      i.AuthSrc,
 	})
 	if err != nil {
 		return "", err

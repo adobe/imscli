@@ -26,16 +26,19 @@ func adminProfileCmd(imsConfig *ims.Config) *cobra.Command {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.GetProfile()
+			resp, err := imsConfig.GetAdminProfile()
 			if err != nil {
-				return fmt.Errorf("error in get profile cmd: %v", err)
+				return fmt.Errorf("error in get admin profile cmd: %v", err)
 			}
 			fmt.Println(resp)
 			return nil
 		},
 	}
+	cmd.Flags().StringVarP(&imsConfig.Guid, "guid", "g", "", "User ID.")
+	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
+	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
-	cmd.Flags().StringVarP(&imsConfig.ProfileApiVersion, "profileApiVersion", "a", "v1", "Profile API version.")
+	cmd.Flags().StringVarP(&imsConfig.ApiVersion, "apiVersion", "a", "v1", "Admin profile API version.")
 
 	return cmd
 }
