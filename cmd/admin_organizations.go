@@ -17,27 +17,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func authzServiceCmd(imsConfig *ims.Config) *cobra.Command {
+func adminOrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
+
 	cmd := &cobra.Command{
-		Use:   "service",
-		Short: "Negotiate a service to service token.",
-		Long:  "Perform the 'Client Credential Authorization Flow' to negotiate an access token for a service.'",
+		Use:     "organizations",
+		Aliases: []string{"orgs"},
+		Short:   "Requests the user organizations using the admin API.",
+		Long:    "Requests the specified user organizations using the admin API and a service token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.AuthorizeService()
+			resp, err := imsConfig.GetAdminOrganizations()
 			if err != nil {
-				return fmt.Errorf("error in login service: %v", err)
+				return fmt.Errorf("error in get admin organizations cmd: %v", err)
 			}
 			fmt.Println(resp)
 			return nil
 		},
 	}
-
+	cmd.Flags().StringVarP(&imsConfig.Guid, "guid", "g", "", "User ID.")
+	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
-	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
-	cmd.Flags().StringVarP(&imsConfig.AuthorizationCode, "authorizationCode", "a", "", "Permanent authorization code.")
+	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
+	cmd.Flags().StringVarP(&imsConfig.OrgsApiVersion, "orgsApiVersion", "a", "v5", "Admin organizations API version.")
 
 	return cmd
 }

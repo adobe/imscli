@@ -18,7 +18,6 @@ type Config struct {
 	URL               string
 	ClientID          string
 	ClientSecret      string
-	ServiceToken      string
 	PrivateKeyPath    string
 	Organization      string
 	Account           string
@@ -27,6 +26,7 @@ type Config struct {
 	AccessToken       string
 	RefreshToken      string
 	DeviceToken       string
+	ServiceToken      string
 	AuthorizationCode string
 	ProfileApiVersion string
 	OrgsApiVersion    string
@@ -40,6 +40,8 @@ type Config struct {
 	Port              int
 	PKCE              bool
 	FullOutput        bool
+	Guid              string
+	AuthSrc           string
 }
 
 // Access token information

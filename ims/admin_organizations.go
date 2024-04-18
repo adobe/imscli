@@ -17,30 +17,38 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-func (i Config) validateGetProfileConfig() error {
-	switch i.ProfileApiVersion {
-	case "v1", "v2", "v3":
+func (i Config) validateGetAdminOrganizationsConfig() error {
+
+	switch i.OrgsApiVersion {
+	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
-		return fmt.Errorf("invalid API version parameter, latest version is v3")
+		return fmt.Errorf("invalid API version parameter, latest version is v6")
 	}
 
 	switch {
-	case i.AccessToken == "":
-		return fmt.Errorf("missing access token parameter")
+	case i.ServiceToken == "":
+		return fmt.Errorf("missing service token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case i.ClientID == "":
+		return fmt.Errorf("missing client ID parameter")
+	case i.Guid == "":
+		return fmt.Errorf("missing guid parameter")
+	case i.AuthSrc == "":
+		return fmt.Errorf("missing auth source parameter")
+
 	default:
 		log.Println("all needed parameters verified not empty")
 	}
 	return nil
 }
 
-// GetProfile requests the user profile using an access token.
-func (i Config) GetProfile() (string, error) {
+// GetAdminOrganizations requests the user's organizations using the admin API and a service token.
+func (i Config) GetAdminOrganizations() (string, error) {
 
-	err := i.validateGetProfileConfig()
+	err := i.validateGetAdminOrganizationsConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for profile: %v", err)
+		return "", fmt.Errorf("invalid parameters for admin organizations: %v", err)
 	}
 
 	httpClient, err := i.httpClient()
@@ -56,13 +64,16 @@ func (i Config) GetProfile() (string, error) {
 		return "", fmt.Errorf("error creating the client: %v", err)
 	}
 
-	profile, err := c.GetProfile(&ims.GetProfileRequest{
-		AccessToken: i.AccessToken,
-		ApiVersion:  i.ProfileApiVersion,
+	organizations, err := c.GetAdminOrganizations(&ims.GetAdminOrganizationsRequest{
+		ServiceToken: i.ServiceToken,
+		ApiVersion:   i.OrgsApiVersion,
+		ClientID:     i.ClientID,
+		Guid:         i.Guid,
+		AuthSrc:      i.AuthSrc,
 	})
 	if err != nil {
 		return "", err
 	}
 
-	return string(profile.Body), nil
+	return string(organizations.Body), nil
 }
