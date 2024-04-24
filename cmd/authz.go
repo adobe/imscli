@@ -11,6 +11,7 @@
 package cmd
 
 import (
+	"github.com/adobe/imscli/cmd/authz"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -26,11 +27,11 @@ This command has no effect by itself, the authorization type needs to be specifi
 `,
 	}
 	cmd.AddCommand(
-		authzUserCmd(imsConfig),
-		authzUserPkceCmd(imsConfig),
-		authzServiceCmd(imsConfig),
-		authzJWTCmd(imsConfig),
-		authzClientCredentialsCmd(imsConfig),
+		authz.UserCmd(imsConfig),
+		authz.UserPkceCmd(imsConfig),
+		authz.ServiceCmd(imsConfig),
+		authz.JWTCmd(imsConfig),
+		authz.ClientCredentialsCmd(imsConfig),
 	)
 	return cmd
 }

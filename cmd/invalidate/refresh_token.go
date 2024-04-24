@@ -1,4 +1,4 @@
-// Copyright 2020 Adobe. All rights reserved.
+// Copyright 2021 Adobe. All rights reserved.
 // This file is licensed to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. You may obtain a copy
 // of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package invalidate
 
 import (
 	"fmt"
@@ -17,30 +17,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func authzJWTCmd(imsConfig *ims.Config) *cobra.Command {
+func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "jwt",
-		Short: "Exchange a JWT for an access token.",
-		Long:  "Perform the 'Assertion Grant Type Flow' to request a token.",
+		Use:     "refreshToken",
+		Aliases: []string{"ref"},
+		Short:   "Invalidate a refresh token.",
+		Long:    "Invalidate a refresh token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.AuthorizeJWTExchange()
+			err := imsConfig.InvalidateToken()
 			if err != nil {
-				return fmt.Errorf("error in jwt authorization: %v", err)
+				return fmt.Errorf("error invalidating the refresh token: %v", err)
 			}
-			fmt.Println(resp.AccessToken)
+			fmt.Println("Refresh token successfully invalidated.")
 			return nil
 		},
 	}
 
+	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "refreshToken", "t", "", "Refresh token.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
-	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "s", "", "IMS Client secret.")
-	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
-	cmd.Flags().StringVarP(&imsConfig.Account, "account", "a", "", "Technical Account ID.")
-	cmd.Flags().StringVarP(&imsConfig.PrivateKeyPath, "privateKey", "k", "", "Private Key file.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Metascopes, "metascopes", "m", []string{""}, "Metascopes to request.")
+	cmd.Flags().BoolVarP(&imsConfig.Cascading, "cascading", "a", false,
+		"Also invalidate all tokens obtained with the refresh token.")
 
 	return cmd
 }

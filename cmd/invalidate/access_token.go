@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package invalidate
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func invalidateAccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func AccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "accessToken",
 		Aliases: []string{"acc"},

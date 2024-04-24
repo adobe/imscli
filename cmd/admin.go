@@ -11,6 +11,7 @@
 package cmd
 
 import (
+	"github.com/adobe/imscli/cmd/admin"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -26,8 +27,8 @@ This command has no effect by itself, the request needs to be specified as a sub
 `,
 	}
 	cmd.AddCommand(
-		adminProfileCmd(imsConfig),
-		adminOrganizationsCmd(imsConfig),
+		admin.ProfileCmd(imsConfig),
+		admin.OrganizationsCmd(imsConfig),
 	)
 	return cmd
 }

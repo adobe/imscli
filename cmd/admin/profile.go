@@ -1,4 +1,4 @@
-// Copyright 2021 Adobe. All rights reserved.
+// Copyright 2023 Adobe. All rights reserved.
 // This file is licensed to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. You may obtain a copy
 // of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package admin
 
 import (
 	"fmt"
@@ -17,28 +17,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func invalidateServiceTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func ProfileCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "serviceToken",
-		Aliases: []string{"svc"},
-		Short:   "Invalidate a service token.",
-		Long:    "Invalidate a service token.",
+		Use:   "profile",
+		Short: "Requests the user profile using the admin API.",
+		Long:  "Requests the specified user profile using the admin API and a service token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			err := imsConfig.InvalidateToken()
+			resp, err := imsConfig.GetAdminProfile()
 			if err != nil {
-				return fmt.Errorf("error invalidating the service token: %v", err)
+				return fmt.Errorf("error in get admin profile cmd: %v", err)
 			}
-			fmt.Println("Service token successfully invalidated.")
+			fmt.Println(resp)
 			return nil
 		},
 	}
-
+	cmd.Flags().StringVarP(&imsConfig.Guid, "guid", "g", "", "User ID.")
+	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
+	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
-	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
-	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "s", "", "IMS Client Secret.")
+	cmd.Flags().StringVarP(&imsConfig.ProfileApiVersion, "profileApiVersion", "a", "v1", "Admin profile API version.")
 
 	return cmd
 }

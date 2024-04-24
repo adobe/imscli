@@ -11,6 +11,7 @@
 package cmd
 
 import (
+	"github.com/adobe/imscli/cmd/validate"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -27,10 +28,10 @@ This command has no effect by itself, the token type must be specified as a subc
 `,
 	}
 	cmd.AddCommand(
-		validateAccessTokenCmd(imsConfig),
-		validateRefreshTokenCmd(imsConfig),
-		validateDeviceTokenCmd(imsConfig),
-		validateAuthzCodeCmd(imsConfig),
+		validate.AccessTokenCmd(imsConfig),
+		validate.RefreshTokenCmd(imsConfig),
+		validate.DeviceTokenCmd(imsConfig),
+		validate.AuthzCodeCmd(imsConfig),
 	)
 	return cmd
 }
