@@ -1,4 +1,4 @@
-// Copyright 2021 Adobe. All rights reserved.
+// Copyright 2020 Adobe. All rights reserved.
 // This file is licensed to you under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. You may obtain a copy
 // of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package authz
 
 import (
 	"fmt"
@@ -17,30 +17,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func validateRefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func JWTCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "refreshToken",
-		Aliases: []string{"ref"},
-		Short:   "Validate a refresh token.",
-		Long:    "Validate a refresh token.",
+		Use:   "jwt",
+		Short: "Exchange a JWT for an access token.",
+		Long:  "Perform the 'Assertion Grant Type Flow' to request a token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.ValidateToken()
+			resp, err := imsConfig.AuthorizeJWTExchange()
 			if err != nil {
-				return fmt.Errorf("error validating the refresh token: %v", err)
+				return fmt.Errorf("error in jwt authorization: %v", err)
 			}
-			if !resp.Valid {
-				return fmt.Errorf("invalid token: %v", resp.Info)
-			}
-			fmt.Println(resp.Info)
+			fmt.Println(resp.AccessToken)
 			return nil
 		},
 	}
 
-	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "refreshToken", "t", "", "Refresh token.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
+	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "s", "", "IMS Client secret.")
+	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
+	cmd.Flags().StringVarP(&imsConfig.Account, "account", "a", "", "Technical Account ID.")
+	cmd.Flags().StringVarP(&imsConfig.PrivateKeyPath, "privateKey", "k", "", "Private Key file.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Metascopes, "metascopes", "m", []string{""}, "Metascopes to request.")
 
 	return cmd
 }

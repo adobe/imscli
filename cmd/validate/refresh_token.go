@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package validate
 
 import (
 	"fmt"
@@ -17,29 +17,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func invalidateRefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "refreshToken",
 		Aliases: []string{"ref"},
-		Short:   "Invalidate a refresh token.",
-		Long:    "Invalidate a refresh token.",
+		Short:   "Validate a refresh token.",
+		Long:    "Validate a refresh token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			err := imsConfig.InvalidateToken()
+			resp, err := imsConfig.ValidateToken()
 			if err != nil {
-				return fmt.Errorf("error invalidating the refresh token: %v", err)
+				return fmt.Errorf("error validating the refresh token: %v", err)
 			}
-			fmt.Println("Refresh token successfully invalidated.")
+			if !resp.Valid {
+				return fmt.Errorf("invalid token: %v", resp.Info)
+			}
+			fmt.Println(resp.Info)
 			return nil
 		},
 	}
 
 	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "refreshToken", "t", "", "Refresh token.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
-	cmd.Flags().BoolVarP(&imsConfig.Cascading, "cascading", "a", false,
-		"Also invalidate all tokens obtained with the refresh token.")
 
 	return cmd
 }

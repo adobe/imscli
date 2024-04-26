@@ -11,6 +11,7 @@
 package cmd
 
 import (
+	"github.com/adobe/imscli/cmd/invalidate"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -27,10 +28,10 @@ This command has no effect by itself, the token type must be specified as a subc
 `,
 	}
 	cmd.AddCommand(
-		invalidateAccessTokenCmd(imsConfig),
-		invalidateRefreshTokenCmd(imsConfig),
-		invalidateDeviceTokenCmd(imsConfig),
-		invalidateServiceTokenCmd(imsConfig),
+		invalidate.AccessTokenCmd(imsConfig),
+		invalidate.RefreshTokenCmd(imsConfig),
+		invalidate.DeviceTokenCmd(imsConfig),
+		invalidate.ServiceTokenCmd(imsConfig),
 	)
 	return cmd
 }

@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package cmd
+package validate
 
 import (
 	"fmt"
@@ -17,19 +17,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func validateDeviceTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func AccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "deviceToken",
-		Aliases: []string{"dev"},
-		Short:   "Validate a device token.",
-		Long:    "Validate a device token.",
+		Use:     "accessToken",
+		Aliases: []string{"acc"},
+		Short:   "Validate an access token.",
+		Long:    "Validate an access token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
 			resp, err := imsConfig.ValidateToken()
 			if err != nil {
-				return fmt.Errorf("error validating the device token: %v", err)
+				return fmt.Errorf("error validating the access token: %v", err)
 			}
 			if !resp.Valid {
 				return fmt.Errorf("invalid token: %v", resp.Info)
@@ -39,7 +39,7 @@ func validateDeviceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&imsConfig.DeviceToken, "deviceToken", "t", "", "Device token.")
+	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS Client ID.")
 
 	return cmd
