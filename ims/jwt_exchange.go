@@ -35,7 +35,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	key, err := ioutil.ReadFile(i.PrivateKeyPath)
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("read private key file: %v", err)
+		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %v", i.PrivateKeyPath, err)
 	}
 
 	// 	Metascopes are passed as generic claims with the format map[string]interface{}

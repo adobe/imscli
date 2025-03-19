@@ -11,8 +11,14 @@
 package ims
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"strings"
 
 	"github.com/adobe/ims-go/ims"
 )
@@ -64,5 +70,94 @@ func (i Config) GetProfile() (string, error) {
 		return "", err
 	}
 
-	return string(profile.Body), nil
+	if !i.DecodeFulfillableData {
+		return string(profile.Body), nil
+	}
+
+	// Decode the fulfillable_data in the product context
+	decodedProfile, err := decodeProfile(profile.Body)
+	if err != nil {
+		return "", err
+	}
+	return decodedProfile, nil
+}
+
+func decodeProfile(profile []byte) (string, error) {
+	// Parse the profile JSON
+	var p map[string]interface{}
+	err := json.Unmarshal(profile, &p)
+	if err != nil {
+		return "", fmt.Errorf("error parsing profile JSON: %v", err)
+	}
+	findFulfillableData(p)
+
+	modifiedJson, err := json.Marshal(p)
+	if err != nil {
+		return "", fmt.Errorf("error marshaling JSON during profile decode: %v", err)
+	}
+
+	return string(modifiedJson), nil
+}
+
+func findFulfillableData(data interface{}) {
+	switch data := data.(type) {
+	case map[string]interface{}:
+		for key, value := range data {
+			if key == "fulfillable_data" {
+				serviceCode, ok := data["serviceCode"].(string)
+				if ok && (serviceCode == "dma_media_library" ||
+					serviceCode == "dma_aem_cloud" ||
+					serviceCode == "dma_aem_contenthub" ||
+					serviceCode == "dx_genstudio") {
+
+					decodedFulfillableData, err := modifyFulfillableData(value.(string))
+					if err != nil {
+						fmt.Printf("Error decoding fulfillable_data: %v", err)
+						return
+					}
+					data["fulfillable_data"] = decodedFulfillableData
+				}
+			} else {
+				findFulfillableData(value)
+			}
+		}
+	case []interface{}:
+		for _, item := range data {
+			findFulfillableData(item)
+		}
+	}
+}
+
+type fulfillableData struct {
+	Iid string `json:"iid"`
+}
+
+func modifyFulfillableData(data string) (string, error) {
+	strippedGzippedInstanceID := strings.Replace(data, "\"", "", 2)
+	gzippedInstanceIDBytes, err := base64.StdEncoding.DecodeString(strippedGzippedInstanceID)
+	if err != nil {
+		return "", fmt.Errorf("unable to base64 decode fulfillable_data: %v", err)
+	}
+
+	gzipReader, err := gzip.NewReader(bytes.NewReader(gzippedInstanceIDBytes))
+	if err != nil {
+		return "", fmt.Errorf("unable to create gzip reader: %v", err)
+	}
+	defer func() {
+		if _, gzErr := io.Copy(io.Discard, gzipReader); gzErr != nil {
+			fmt.Errorf("error while consuming the gzip reader: %v", gzErr)
+		}
+
+		if gzErr := gzipReader.Close(); gzErr != nil {
+			fmt.Errorf("unable to close gzip reader: %v", gzErr)
+		}
+	}()
+
+	iidDecoder := json.NewDecoder(gzipReader)
+	instanceIdJson := fulfillableData{}
+	err = iidDecoder.Decode(&instanceIdJson)
+	if err != nil {
+		return "", fmt.Errorf("unable to unmarshall the fulfillable_data: %v", err)
+	}
+	return instanceIdJson.Iid, nil
 }
