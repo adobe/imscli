@@ -15,33 +15,34 @@ import (
 )
 
 type Config struct {
-	URL               string
-	ClientID          string
-	ClientSecret      string
-	PrivateKeyPath    string
-	Organization      string
-	Account           string
-	Scopes            []string
-	Metascopes        []string
-	AccessToken       string
-	RefreshToken      string
-	DeviceToken       string
-	ServiceToken      string
-	AuthorizationCode string
-	ProfileApiVersion string
-	OrgsApiVersion    string
-	Timeout           int
-	ProxyURL          string
-	ProxyIgnoreTLS    bool
-	PublicClient      bool
-	UserID            string
-	Cascading         bool
-	Token             string
-	Port              int
-	PKCE              bool
-	FullOutput        bool
-	Guid              string
-	AuthSrc           string
+	URL                   string
+	ClientID              string
+	ClientSecret          string
+	PrivateKeyPath        string
+	Organization          string
+	Account               string
+	Scopes                []string
+	Metascopes            []string
+	AccessToken           string
+	RefreshToken          string
+	DeviceToken           string
+	ServiceToken          string
+	AuthorizationCode     string
+	ProfileApiVersion     string
+	OrgsApiVersion        string
+	Timeout               int
+	ProxyURL              string
+	ProxyIgnoreTLS        bool
+	PublicClient          bool
+	UserID                string
+	Cascading             bool
+	Token                 string
+	Port                  int
+	PKCE                  bool
+	FullOutput            bool
+	Guid                  string
+	AuthSrc               string
+	DecodeFulfillableData bool
 }
 
 // Access token information
