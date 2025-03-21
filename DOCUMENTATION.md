@@ -1,5 +1,5 @@
 # imscli
-CLI tool to login and interact with the IMS API.
+CLI tool to obtain IMS tokens and interact with the IMS API.
 
 ## Usage
 
@@ -40,11 +40,11 @@ To configure bash, add the following line to your .bashrc (or alternative config
 
 ### Profile
 
-Provided a user's access token, gathers the user profile.
+Provided a user's access token, gather the user profile.
 
 ### Organizations
 
-Provided a user's access token, gathers the user organizations.
+Provided a user's access token, gather the user organizations.
 
 ### Exchange
 
@@ -66,13 +66,13 @@ Usage is defined by what the CLI libraries [Cobra](https://github.com/spf13/cobr
 
 There are three sources of parameters, listed from higher to lower priority.
 
-The three source of parameters can be combined, priority will be taken in account in case of overlap.
+The three sources of parameters can be combined, priority will be taken into account in case of overlap.
 
 #### CLI flags
 
 Direct CLI parameters, with extensive documentation executing each subcommand with --help.
 ```
-imscli login user --scopes AdobeID,openid,session
+imscli authz user --scopes AdobeID,openid,session
 ```
 
 #### Environment variables
@@ -86,9 +86,9 @@ IMS_SCOPES="AdobeID,openid,session" imscli login user
 
 There are two ways to specify config files:
 
-- Default configuration file, useful for defaults when used directly by users, not thought for automation.
+- The default configuration file, useful for defaults when used directly by users. This is not practical for automation.
     - The file should be stored in ~/.config/
-    - The file should be named `imscli.extension`, where extension has to match the file format.
+    - The file should be named `imscli.extension`, where the extension has to match the file format.
     - Supported formats among others include YAML and JSON.
 - Directly specified configuration file with the -f flag.
 ```
