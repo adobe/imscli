@@ -13,10 +13,9 @@ This project is wrapping adobe/ims-go.
 Build the CLI or download a prebuilt [release](https://github.com/adobe/imscli/releases).
 
 Example:
-```
-git clone https://github.com/adobe/imscli
 
-go install
+```sh
+go install github.com/adobe/imscli@latest
 ```
 
 ## Usage
