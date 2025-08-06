@@ -12,7 +12,7 @@ module github.com/adobe/imscli
 
 go 1.21.0
 
-toolchain go1.24.3
+toolchain go1.24.6
 
 require (
 	github.com/adobe/ims-go v0.19.1
