@@ -12,12 +12,12 @@ module github.com/adobe/imscli
 
 go 1.23.0
 
-toolchain go1.25.1
+toolchain go1.25.6
 
 require (
 	github.com/adobe/ims-go v0.19.2
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 )
 
