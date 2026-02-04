@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/adobe/imscli/cmd/dcr"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -13,7 +12,7 @@ func dcrCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:  `The dcr command enables Dynamic Client Registration operations.`,
 	}
 	cmd.AddCommand(
-		dcr.RegisterCmd(imsConfig),
+		ims.RegisterCmd(imsConfig),
 	)
 	return cmd
 }

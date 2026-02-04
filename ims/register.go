@@ -1,4 +1,4 @@
-package dcr
+package ims
 
 import (
 	"fmt"
@@ -6,18 +6,17 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
 
-func RegisterCmd(imsConfig *ims.Config) *cobra.Command {
+func RegisterCmd(imsConfig *Config) *cobra.Command {
 	var registerURL, clientName string
 	var redirectURIs []string
 
 	cmd := &cobra.Command{
 		Use:   "register",
-		Short: "Register a dynamic client.",
-		Long:  `Register a new OAuth 2.0 client dynamically using OIDC Dynamic Client Registration.`,
+		Short: "Register a client.",
+		Long:  `Register a new OAuth client using Dynamic Client Registration.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Build redirect URIs JSON array
 			redirectURIsJSON := "["
@@ -44,7 +43,7 @@ func RegisterCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&registerURL, "url", "u", "", "OIDC registration endpoint URL.")
+	cmd.Flags().StringVarP(&registerURL, "url", "u", "", "registration endpoint URL.")
 	cmd.Flags().StringVarP(&clientName, "clientName", "n", "", "Client application name.")
 	cmd.Flags().StringSliceVarP(&redirectURIs, "redirectURIs", "r", []string{}, "Redirect URIs (comma-separated or multiple flags).")
 
