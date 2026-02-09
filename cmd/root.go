@@ -11,7 +11,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 
 	"github.com/adobe/imscli/ims"
@@ -30,7 +30,7 @@ func RootCmd(version string) *cobra.Command {
 		Version: version,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if !verbose {
-				log.SetOutput(ioutil.Discard)
+				log.SetOutput(io.Discard)
 			}
 			// This call of the initParams will load all env vars, config file and flags.
 			return initParams(cmd, imsConfig, configFile)

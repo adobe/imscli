@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/browser"
 )
 
-const port = 8888
+const defaultPort = 8888
 
 /*
  * Validate that:
@@ -66,6 +66,12 @@ func (i Config) AuthorizeUser() (string, error) {
 		return "", fmt.Errorf("invalid parameters for login user: %v", err)
 	}
 
+	// Use default port if not specified
+	port := i.Port
+	if port == 0 {
+		port = defaultPort
+	}
+
 	httpClient, err := i.httpClient()
 	if err != nil {
 		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
@@ -85,7 +91,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
 		UsePKCE:      i.PKCE,
-		RedirectURI:  "http://localhost:8888",
+		RedirectURI:  fmt.Sprintf("http://localhost:%d", port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
 				<h1>An error occurred</h1>

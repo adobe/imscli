@@ -11,10 +11,19 @@
 package ims
 
 import (
+	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"strings"
 )
+
+// DecodedToken represents the decoded parts of a JWT token.
+type DecodedToken struct {
+	Header    string
+	Payload   string
+	Signature string
+}
 
 func (i Config) validateDecodeTokenConfig() error {
 
@@ -24,7 +33,7 @@ func (i Config) validateDecodeTokenConfig() error {
 	return nil
 }
 
-func (i Config) DecodeToken() ([]string, error) {
+func (i Config) DecodeToken() (*DecodedToken, error) {
 	err := i.validateDecodeTokenConfig()
 	if err != nil {
 		return nil, fmt.Errorf("incomplete parameters for token decodification: %v", err)
@@ -35,13 +44,40 @@ func (i Config) DecodeToken() ([]string, error) {
 		return nil, fmt.Errorf("the JWT is not composed by 3 parts")
 	}
 
-	// i<2 to not decode the signature since it is not encoded
-	for i:=0; i<2; i++  {
-		decodedPart, err := base64.RawURLEncoding.DecodeString(parts[i])
-		if err != nil {
-			return nil, fmt.Errorf("error decoding token, part %d: %v", i, err)
-		}
-		parts[i] = string(decodedPart)
+	// Decode header and payload (not signature since it's binary)
+	decoded := &DecodedToken{
+		Signature: parts[2],
 	}
-	return parts, nil
+
+	// Decode and prettify header
+	headerBytes, err := base64.RawURLEncoding.DecodeString(parts[0])
+	if err != nil {
+		return nil, fmt.Errorf("error decoding token header: %v", err)
+	}
+	decoded.Header, err = prettyJSON(headerBytes)
+	if err != nil {
+		return nil, fmt.Errorf("error formatting token header: %v", err)
+	}
+
+	// Decode and prettify payload
+	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("error decoding token payload: %v", err)
+	}
+	decoded.Payload, err = prettyJSON(payloadBytes)
+	if err != nil {
+		return nil, fmt.Errorf("error formatting token payload: %v", err)
+	}
+
+	return decoded, nil
+}
+
+// prettyJSON formats JSON bytes with indentation.
+func prettyJSON(data []byte) (string, error) {
+	var prettyBuf bytes.Buffer
+	err := json.Indent(&prettyBuf, data, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return prettyBuf.String(), nil
 }
