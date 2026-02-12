@@ -22,18 +22,20 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 		Use:     "decode",
 		Aliases: []string{"dec"},
 		Short:   "Decode a JWT token.",
-		Long:    "Decode a JWT token.",
+		Long:    "Decode a JWT token and display the header and payload as prettified JSON.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
-			resp, err := imsConfig.DecodeToken()
+			decoded, err := imsConfig.DecodeToken()
 			if err != nil {
 				return fmt.Errorf("error decoding the token: %v", err)
 			}
-			for _, part := range resp {
-				fmt.Println(part)
-			}
+
+			fmt.Println(decoded.Header)
+			fmt.Println()
+			fmt.Println(decoded.Payload)
+
 			return nil
 		},
 	}
