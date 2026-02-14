@@ -43,6 +43,9 @@ type Config struct {
 	Guid                  string
 	AuthSrc               string
 	DecodeFulfillableData bool
+	RegisterURL           string
+	ClientName            string
+	RedirectURIs          []string
 }
 
 // Access token information
