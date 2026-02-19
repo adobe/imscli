@@ -46,6 +46,7 @@ func RootCmd(version string) *cobra.Command {
 	cmd.PersistentFlags().StringVarP(&configFile, "configFile", "f", "", "Configuration file.")
 
 	cmd.AddCommand(
+		oboExchangeCmd(imsConfig),
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),
