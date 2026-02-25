@@ -28,8 +28,8 @@ import (
 // - Scope boundary: requested scopes cannot exceed the client's configured scopes.
 // - Audit trail: the full actor chain is preserved in the act claim of the issued token.
 
-// grant type for OBO at IMS token endpoint (adjust if Adobe IMS uses a different value)
-const oboGrantType = "on_behalf_of"
+// OBO uses token v4 and RFC 8693 grant type per IMS OBO documentation.
+const defaultOBOGrantType = "urn:ietf:params:oauth:grant-type:token-exchange"
 
 func (i Config) validateOBOExchangeConfig() error {
 	switch {
@@ -61,16 +61,26 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
 	}
 
+	grantType := defaultOBOGrantType
+	if i.OBOGrantType != "" {
+		grantType = i.OBOGrantType
+	}
 	data := url.Values{}
-	data.Set("grant_type", oboGrantType)
+	data.Set("grant_type", grantType)
+	data.Set("client_id", i.ClientID)
 	data.Set("client_secret", i.ClientSecret)
 	data.Set("subject_token", i.AccessToken)
 	data.Set("subject_token_type", "urn:ietf:params:oauth:token-type:access_token")
+	data.Set("requested_token_type", "urn:ietf:params:oauth:token-type:access_token")
+	// Send scope only when explicitly set via -s. Else send a minimal scope some IMS v4 setups expect.
 	if len(i.Scopes) > 0 && (len(i.Scopes) != 1 || i.Scopes[0] != "") {
 		data.Set("scope", strings.Join(i.Scopes, ","))
+	} else {
+		data.Set("scope", "openid")
 	}
 
-	tokenURL := fmt.Sprintf("%s/ims/token/v3?client_id=%s", strings.TrimSuffix(i.URL, "/"), url.QueryEscape(i.ClientID))
+	// OBO Token Exchange requires /ims/token/v4 (v3 does not support this grant type).
+	tokenURL := fmt.Sprintf("%s/ims/token/v4?client_id=%s", strings.TrimSuffix(i.URL, "/"), url.QueryEscape(i.ClientID))
 	req, err := http.NewRequest(http.MethodPost, tokenURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error creating OBO request: %v", err)
@@ -89,7 +99,16 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return TokenInfo{}, fmt.Errorf("OBO exchange failed (status %d): %s", resp.StatusCode, string(body))
+		errMsg := fmt.Sprintf("OBO exchange failed (status %d): %s", resp.StatusCode, string(body))
+		if resp.StatusCode == http.StatusBadRequest {
+			if strings.Contains(string(body), "unsupported_grant_type") {
+				errMsg += " — try --grantType with the value your IMS environment expects, or check IMS/OBO documentation."
+			}
+			if strings.Contains(string(body), "invalid_scope") {
+				errMsg += " — IMS may be rejecting the subject token's scopes for this client. Ensure the client has Token exchange enabled and allowed scopes in the portal, or try a user token obtained with fewer scopes."
+			}
+		}
+		return TokenInfo{}, fmt.Errorf("%s", errMsg)
 	}
 
 	var out struct {
