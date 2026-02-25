@@ -40,7 +40,7 @@ func JWTCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
 	cmd.Flags().StringVarP(&imsConfig.Account, "account", "a", "", "Technical Account ID.")
 	cmd.Flags().StringVarP(&imsConfig.PrivateKeyPath, "privateKey", "k", "", "Private Key file.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Metascopes, "metascopes", "m", []string{""}, "Metascopes to request.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Metascopes, "metascopes", "m", []string{}, "Metascopes to request.")
 
 	return cmd
 }

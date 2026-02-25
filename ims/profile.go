@@ -110,7 +110,12 @@ func findFulfillableData(data interface{}) {
 					serviceCode == "dma_aem_contenthub" ||
 					serviceCode == "dx_genstudio") {
 
-					decodedFulfillableData, err := modifyFulfillableData(value.(string))
+					strValue, ok := value.(string)
+					if !ok {
+						// Skip non-string fulfillable_data to avoid a panic
+						continue
+					}
+					decodedFulfillableData, err := modifyFulfillableData(strValue)
 					if err != nil {
 						fmt.Printf("Error decoding fulfillable_data: %v", err)
 						return

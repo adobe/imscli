@@ -38,7 +38,7 @@ func (i Config) validateAuthorizeUserConfig() error {
 		return fmt.Errorf("missing IMS base URL parameter")
 	case !validateURL(i.URL):
 		return fmt.Errorf("unable to parse URL parameter")
-	case i.Scopes[0] == "":
+	case len(i.Scopes) == 0 || i.Scopes[0] == "":
 		return fmt.Errorf("missing scopes parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client id parameter")

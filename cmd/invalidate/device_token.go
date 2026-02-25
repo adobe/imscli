@@ -29,7 +29,7 @@ func DeviceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {
-				return fmt.Errorf("error validating the device token: %v", err)
+				return fmt.Errorf("error invalidating the device token: %v", err)
 			}
 			fmt.Println("Token invalidated successfully.")
 			return nil

@@ -12,7 +12,7 @@ package ims
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/adobe/ims-go/ims"
@@ -33,7 +33,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("create client: %v", err)
 	}
 
-	key, err := ioutil.ReadFile(i.PrivateKeyPath)
+	key, err := os.ReadFile(i.PrivateKeyPath)
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %v", i.PrivateKeyPath, err)
 	}

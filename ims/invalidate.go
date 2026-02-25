@@ -37,7 +37,7 @@ func (i Config) validateInvalidateTokenConfig() error {
 		log.Println("device token will be invalidated")
 		return nil
 	case i.ServiceToken != "":
-		log.Println("authorization code will be invalidated")
+		log.Println("service token will be invalidated")
 		if i.ClientSecret == "" {
 			return fmt.Errorf("missing client secret, mandatory to invalidate service token")
 		}
@@ -50,7 +50,7 @@ func (i Config) validateInvalidateTokenConfig() error {
 // InvalidateToken Invalidates the token provided in the configuration using the IMS API.
 func (i Config) InvalidateToken() error {
 	// Perform parameter validation
-	err := i.validateValidateTokenConfig()
+	err := i.validateInvalidateTokenConfig()
 	if err != nil {
 		return fmt.Errorf("incomplete parameters for token invalidation: %v", err)
 	}

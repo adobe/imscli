@@ -43,7 +43,7 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		"IMS Organization for the new token. Can't be used in conjunction with userID.")
 	cmd.Flags().StringVarP(&imsConfig.UserID, "userID", "u", "",
 		"User ID of the new token. Can't be used in conjunction with organization.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{},
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
 			"scopes are requested the same scopes of the original token will be provided")
 
