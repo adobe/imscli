@@ -46,6 +46,8 @@ chain is preserved in the act claim for audit.`,
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "User access token (subject token). Do not use service or impersonation tokens.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
 		"Scopes to request. Must be within the client's configured scope boundary. Optional.")
+	cmd.Flags().StringVar(&imsConfig.OBOGrantType, "grantType", "",
+		"OAuth grant type for token exchange. If omitted, RFC 8693 token-exchange is used. Set if your IMS returns unsupported_grant_type (e.g. an IMS-specific value).")
 
 	return cmd
 }
