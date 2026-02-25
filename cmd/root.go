@@ -55,6 +55,7 @@ func RootCmd(version string) *cobra.Command {
 		decodeCmd(imsConfig),
 		refreshCmd(imsConfig),
 		adminCmd(imsConfig),
+		dcrCmd(imsConfig),
 	)
 	return cmd
 }
