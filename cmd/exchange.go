@@ -29,7 +29,7 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.ClusterExchange()
 			if err != nil {
-				return fmt.Errorf("error exchanging the access token: %v", err)
+				return fmt.Errorf("error exchanging the access token: %w", err)
 			}
 			fmt.Println(resp.AccessToken)
 			return nil

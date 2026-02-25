@@ -30,7 +30,7 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 			imsConfig.PKCE = true
 			resp, err := imsConfig.AuthorizeUser()
 			if err != nil {
-				return fmt.Errorf("error in user authorization: %v", err)
+				return fmt.Errorf("error in user authorization: %w", err)
 			}
 			fmt.Println(resp)
 			return nil

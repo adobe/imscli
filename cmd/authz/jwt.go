@@ -28,7 +28,7 @@ func JWTCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.AuthorizeJWTExchange()
 			if err != nil {
-				return fmt.Errorf("error in jwt authorization: %v", err)
+				return fmt.Errorf("error in jwt authorization: %w", err)
 			}
 			fmt.Println(resp.AccessToken)
 			return nil

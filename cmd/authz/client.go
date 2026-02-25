@@ -29,7 +29,7 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.AuthorizeClientCredentials()
 			if err != nil {
-				return fmt.Errorf("error in login service: %v", err)
+				return fmt.Errorf("error in login service: %w", err)
 			}
 			fmt.Println(resp)
 			return nil

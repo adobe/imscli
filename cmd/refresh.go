@@ -30,7 +30,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.Refresh()
 			if err != nil {
-				return fmt.Errorf("error during the token refresh: %v", err)
+				return fmt.Errorf("error during the token refresh: %w", err)
 			}
 			if imsConfig.FullOutput {
 				data := map[string]interface{}{
@@ -39,7 +39,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 				}
 				jsonData, err := json.MarshalIndent(data, "", "  ")
 				if err != nil {
-					return fmt.Errorf("error marshalling full JSON response: %v", err)
+					return fmt.Errorf("error marshalling full JSON response: %w", err)
 				}
 				fmt.Printf("%s", jsonData)
 				return nil

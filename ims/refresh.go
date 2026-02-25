@@ -35,12 +35,12 @@ func (i Config) validateRefreshConfig() error {
 func (i Config) Refresh() (RefreshInfo, error) {
 
 	if err := i.validateRefreshConfig(); err != nil {
-		return RefreshInfo{}, fmt.Errorf("invalid parameters for token refresh: %v", err)
+		return RefreshInfo{}, fmt.Errorf("invalid parameters for token refresh: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return RefreshInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
+		return RefreshInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -48,7 +48,7 @@ func (i Config) Refresh() (RefreshInfo, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return RefreshInfo{}, fmt.Errorf("create client: %v", err)
+		return RefreshInfo{}, fmt.Errorf("create client: %w", err)
 	}
 
 	r, err := c.RefreshToken(&ims.RefreshTokenRequest{
@@ -58,7 +58,7 @@ func (i Config) Refresh() (RefreshInfo, error) {
 		Scope:        i.Scopes,
 	})
 	if err != nil {
-		return RefreshInfo{}, fmt.Errorf("error during the token refresh: %v", err)
+		return RefreshInfo{}, fmt.Errorf("error during the token refresh: %w", err)
 	}
 
 	return RefreshInfo{

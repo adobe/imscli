@@ -19,7 +19,7 @@ import (
 )
 
 func RootCmd(version string) *cobra.Command {
-	var verbose bool = false
+	var verbose bool
 	var configFile string
 	var imsConfig = &ims.Config{}
 

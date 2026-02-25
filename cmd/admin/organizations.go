@@ -30,7 +30,7 @@ func OrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.GetAdminOrganizations()
 			if err != nil {
-				return fmt.Errorf("error in get admin organizations cmd: %v", err)
+				return fmt.Errorf("error in get admin organizations cmd: %w", err)
 			}
 			fmt.Println(resp)
 			return nil

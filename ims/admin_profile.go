@@ -47,12 +47,12 @@ func (i Config) GetAdminProfile() (string, error) {
 
 	err := i.validateGetAdminProfileConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for admin profile: %v", err)
+		return "", fmt.Errorf("invalid parameters for admin profile: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -60,7 +60,7 @@ func (i Config) GetAdminProfile() (string, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return "", fmt.Errorf("error creating the client: %v", err)
+		return "", fmt.Errorf("error creating the client: %w", err)
 	}
 
 	profile, err := c.GetAdminProfile(&ims.GetAdminProfileRequest{

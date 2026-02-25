@@ -53,12 +53,12 @@ func (i Config) ValidateToken() (TokenInfo, error) {
 	// Perform parameter validation
 	err := i.validateValidateTokenConfig()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("invalid parameters for token validation: %v", err)
+		return TokenInfo{}, fmt.Errorf("invalid parameters for token validation: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
+		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -66,7 +66,7 @@ func (i Config) ValidateToken() (TokenInfo, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("create client: %v", err)
+		return TokenInfo{}, fmt.Errorf("create client: %w", err)
 	}
 
 	var token string
@@ -95,7 +95,7 @@ func (i Config) ValidateToken() (TokenInfo, error) {
 		ClientID: i.ClientID,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error during token validation: %v", err)
+		return TokenInfo{}, fmt.Errorf("error during token validation: %w", err)
 	}
 
 	return TokenInfo{

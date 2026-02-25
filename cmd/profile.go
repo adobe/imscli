@@ -30,7 +30,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.GetProfile()
 			if err != nil {
-				return fmt.Errorf("error in get profile cmd: %v", err)
+				return fmt.Errorf("error in get profile cmd: %w", err)
 			}
 			output.PrintPrettyJSON(resp)
 			return nil

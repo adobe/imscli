@@ -46,12 +46,12 @@ func (i Config) GetProfile() (string, error) {
 
 	err := i.validateGetProfileConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for profile: %v", err)
+		return "", fmt.Errorf("invalid parameters for profile: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -59,7 +59,7 @@ func (i Config) GetProfile() (string, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return "", fmt.Errorf("error creating the client: %v", err)
+		return "", fmt.Errorf("error creating the client: %w", err)
 	}
 
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
@@ -87,13 +87,13 @@ func decodeProfile(profile []byte) (string, error) {
 	var p map[string]interface{}
 	err := json.Unmarshal(profile, &p)
 	if err != nil {
-		return "", fmt.Errorf("error parsing profile JSON: %v", err)
+		return "", fmt.Errorf("error parsing profile JSON: %w", err)
 	}
 	findFulfillableData(p)
 
 	modifiedJson, err := json.Marshal(p)
 	if err != nil {
-		return "", fmt.Errorf("error marshaling JSON during profile decode: %v", err)
+		return "", fmt.Errorf("error marshaling JSON during profile decode: %w", err)
 	}
 
 	return string(modifiedJson), nil
@@ -138,15 +138,15 @@ type fulfillableData struct {
 }
 
 func modifyFulfillableData(data string) (string, error) {
-	strippedGzippedInstanceID := strings.Replace(data, "\"", "", 2)
+	strippedGzippedInstanceID := strings.Trim(data, "\"")
 	gzippedInstanceIDBytes, err := base64.StdEncoding.DecodeString(strippedGzippedInstanceID)
 	if err != nil {
-		return "", fmt.Errorf("unable to base64 decode fulfillable_data: %v", err)
+		return "", fmt.Errorf("unable to base64 decode fulfillable_data: %w", err)
 	}
 
 	gzipReader, err := gzip.NewReader(bytes.NewReader(gzippedInstanceIDBytes))
 	if err != nil {
-		return "", fmt.Errorf("unable to create gzip reader: %v", err)
+		return "", fmt.Errorf("unable to create gzip reader: %w", err)
 	}
 	defer func() {
 		if _, gzErr := io.Copy(io.Discard, gzipReader); gzErr != nil {
@@ -162,7 +162,7 @@ func modifyFulfillableData(data string) (string, error) {
 	instanceIdJson := fulfillableData{}
 	err = iidDecoder.Decode(&instanceIdJson)
 	if err != nil {
-		return "", fmt.Errorf("unable to unmarshall the fulfillable_data: %v", err)
+		return "", fmt.Errorf("unable to unmarshall the fulfillable_data: %w", err)
 	}
 	return instanceIdJson.Iid, nil
 }
