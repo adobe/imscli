@@ -35,10 +35,14 @@ func initParams(cmd *cobra.Command, params *ims.Config, configFile string) error
 	v.SetEnvPrefix("ims")
 	v.AutomaticEnv()
 
-	// Command flags
+	// Command flags (local + inherited persistent flags)
 	err := v.BindPFlags(cmd.Flags())
 	if err != nil {
 		return fmt.Errorf("unable to process command flags: %w", err)
+	}
+	err = v.BindPFlags(cmd.InheritedFlags())
+	if err != nil {
+		return fmt.Errorf("unable to process inherited flags: %w", err)
 	}
 
 	if configFile == "" {
