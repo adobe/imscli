@@ -20,9 +20,6 @@ import (
 	"time"
 )
 
-// OBO (On-Behalf-Of) token exchange security constraints:
-// - Do NOT send OBO access tokens to frontend clients; they are for backend-to-backend use only.
-// - Short TTL: OBO tokens typically expire in 5 minutes by default.
 // - Subject token restrictions: only user access tokens are accepted; ServiceTokens and
 //   impersonation tokens must not be used as the subject token.
 // - Scope boundary: requested scopes cannot exceed the client's configured scopes.
@@ -48,9 +45,6 @@ func (i Config) validateOBOExchangeConfig() error {
 	}
 }
 
-// OBOExchange performs the On-Behalf-Of token exchange.
-// It exchanges a user's access token for a new token that can be used by the backend to call
-// downstream APIs on behalf of that user. The returned token must only be used server-side.
 func (i Config) OBOExchange() (TokenInfo, error) {
 	if err := i.validateOBOExchangeConfig(); err != nil {
 		return TokenInfo{}, fmt.Errorf("invalid parameters for OBO exchange: %v", err)
@@ -72,11 +66,9 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 	data.Set("subject_token", i.AccessToken)
 	data.Set("subject_token_type", "urn:ietf:params:oauth:token-type:access_token")
 	data.Set("requested_token_type", "urn:ietf:params:oauth:token-type:access_token")
-	// Send scope only when explicitly set via -s. Else send a minimal scope some IMS v4 setups expect.
+	// Send scope only when explicitly set via -s. If omitted, don't set scope so IMS errors and user sees they must pass -s.
 	if len(i.Scopes) > 0 && (len(i.Scopes) != 1 || i.Scopes[0] != "") {
 		data.Set("scope", strings.Join(i.Scopes, ","))
-	} else {
-		data.Set("scope", "openid")
 	}
 
 	// OBO Token Exchange requires /ims/token/v4 (v3 does not support this grant type).
