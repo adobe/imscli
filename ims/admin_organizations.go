@@ -72,7 +72,7 @@ func (i Config) GetAdminOrganizations() (string, error) {
 		AuthSrc:      i.AuthSrc,
 	})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error getting admin organizations: %w", err)
 	}
 
 	return string(organizations.Body), nil

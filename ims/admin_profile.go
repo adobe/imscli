@@ -71,7 +71,7 @@ func (i Config) GetAdminProfile() (string, error) {
 		AuthSrc:      i.AuthSrc,
 	})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error getting admin profile: %w", err)
 	}
 
 	return string(profile.Body), nil

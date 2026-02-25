@@ -67,7 +67,7 @@ func (i Config) GetProfile() (string, error) {
 		ApiVersion:  i.ProfileApiVersion,
 	})
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error getting profile: %w", err)
 	}
 
 	if !i.DecodeFulfillableData {
