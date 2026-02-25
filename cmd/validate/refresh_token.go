@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/adobe/imscli/ims"
+	"github.com/adobe/imscli/output"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,7 @@ func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 			if !resp.Valid {
 				return fmt.Errorf("invalid token: %v", resp.Info)
 			}
-			fmt.Println(resp.Info)
+			output.PrintPrettyJSON(resp.Info)
 			return nil
 		},
 	}

@@ -41,7 +41,7 @@ func UserCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""}, "Scopes to request.")
-	//TODO: cmd.Flags().IntVarP(&imsConfig.Port, "port", "C", 8888, "Local port to be used by the OAuth Client.")
+	cmd.Flags().IntVarP(&imsConfig.Port, "port", "l", 8888, "Local port to be used by the OAuth Client.")
 
 	return cmd
 }

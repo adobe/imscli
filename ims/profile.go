@@ -145,11 +145,11 @@ func modifyFulfillableData(data string) (string, error) {
 	}
 	defer func() {
 		if _, gzErr := io.Copy(io.Discard, gzipReader); gzErr != nil {
-			fmt.Errorf("error while consuming the gzip reader: %v", gzErr)
+			log.Printf("error while consuming the gzip reader: %v", gzErr)
 		}
 
 		if gzErr := gzipReader.Close(); gzErr != nil {
-			fmt.Errorf("unable to close gzip reader: %v", gzErr)
+			log.Printf("unable to close gzip reader: %v", gzErr)
 		}
 	}()
 

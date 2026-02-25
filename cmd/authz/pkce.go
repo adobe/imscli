@@ -42,7 +42,7 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""}, "Scopes to request.")
 	cmd.Flags().BoolVarP(&imsConfig.PublicClient, "public", "b", false, "Public client, ignore secret.")
-	//TODO: cmd.Flags().IntVarP(&imsConfig.Port, "port", "C", 8888, "Local port to be used by the OAuth Client.")
+	cmd.Flags().IntVarP(&imsConfig.Port, "port", "l", 8888, "Local port to be used by the OAuth Client.")
 
 	return cmd
 }
