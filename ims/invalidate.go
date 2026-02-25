@@ -37,7 +37,7 @@ func (i Config) validateInvalidateTokenConfig() error {
 		log.Println("device token will be invalidated")
 		return nil
 	case i.ServiceToken != "":
-		log.Println("authorization code will be invalidated")
+		log.Println("service token will be invalidated")
 		if i.ClientSecret == "" {
 			return fmt.Errorf("missing client secret, mandatory to invalidate service token")
 		}
@@ -50,14 +50,14 @@ func (i Config) validateInvalidateTokenConfig() error {
 // InvalidateToken Invalidates the token provided in the configuration using the IMS API.
 func (i Config) InvalidateToken() error {
 	// Perform parameter validation
-	err := i.validateValidateTokenConfig()
+	err := i.validateInvalidateTokenConfig()
 	if err != nil {
-		return fmt.Errorf("incomplete parameters for token invalidation: %v", err)
+		return fmt.Errorf("incomplete parameters for token invalidation: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return fmt.Errorf("error creating the HTTP Client: %v", err)
+		return fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -65,7 +65,7 @@ func (i Config) InvalidateToken() error {
 		Client: httpClient,
 	})
 	if err != nil {
-		return fmt.Errorf("create client: %v", err)
+		return fmt.Errorf("create client: %w", err)
 	}
 
 	var token string
@@ -96,7 +96,7 @@ func (i Config) InvalidateToken() error {
 		ClientSecret: i.ClientSecret,
 	})
 	if err != nil {
-		return fmt.Errorf("error during token invalidation: %v", err)
+		return fmt.Errorf("error during token invalidation: %w", err)
 	}
 
 	return nil

@@ -21,7 +21,7 @@ import (
 func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "refresh",
-		Aliases: []string{"exch"},
+		Aliases: []string{"ref"},
 		Short:   "Exchange a refresh token for new access and refresh tokens.",
 		Long:    "Exchange a refresh token for new access and refresh tokens.",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -30,7 +30,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.Refresh()
 			if err != nil {
-				return fmt.Errorf("error during the token refresh: %v", err)
+				return fmt.Errorf("error during the token refresh: %w", err)
 			}
 			if imsConfig.FullOutput {
 				data := map[string]interface{}{
@@ -39,7 +39,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 				}
 				jsonData, err := json.MarshalIndent(data, "", "  ")
 				if err != nil {
-					return fmt.Errorf("error marshalling full JSON response: %v", err)
+					return fmt.Errorf("error marshalling full JSON response: %w", err)
 				}
 				fmt.Printf("%s", jsonData)
 				return nil
@@ -52,7 +52,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringVarP(&imsConfig.RefreshToken, "refreshToken", "t", "", "Refresh token.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{},
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
 			"scopes are requested the same scopes of the original token will be provided.")
 	cmd.Flags().BoolVarP(&imsConfig.FullOutput, "fullOutput", "F", false, "Output a JSON with access and refresh tokens.")

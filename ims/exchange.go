@@ -40,12 +40,12 @@ func (i Config) validateClusterExchangeConfig() error {
 func (i Config) ClusterExchange() (TokenInfo, error) {
 
 	if err := i.validateClusterExchangeConfig(); err != nil {
-		return TokenInfo{}, fmt.Errorf("invalid parameters for cluster exchange: %v", err)
+		return TokenInfo{}, fmt.Errorf("invalid parameters for cluster exchange: %w", err)
 	}
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
+		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -53,7 +53,7 @@ func (i Config) ClusterExchange() (TokenInfo, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("create client: %v", err)
+		return TokenInfo{}, fmt.Errorf("create client: %w", err)
 	}
 
 	r, err := c.ClusterExchange(&ims.ClusterExchangeRequest{
@@ -65,7 +65,7 @@ func (i Config) ClusterExchange() (TokenInfo, error) {
 		Scopes:       i.Scopes,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error during the cluster exchange: %v", err)
+		return TokenInfo{}, fmt.Errorf("error during the cluster exchange: %w", err)
 	}
 
 	return TokenInfo{

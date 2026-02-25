@@ -38,14 +38,14 @@ func initParams(cmd *cobra.Command, params *ims.Config, configFile string) error
 	// Command flags
 	err := v.BindPFlags(cmd.Flags())
 	if err != nil {
-		return fmt.Errorf("unable to process command flags: %v", err)
+		return fmt.Errorf("unable to process command flags: %w", err)
 	}
 
 	if configFile == "" {
 		// Configuration file ( ~/.config/imscli.ext )
 		configDir, err := os.UserConfigDir()
 		if err != nil {
-			return fmt.Errorf("unable to find configuration directory: %v", err)
+			return fmt.Errorf("unable to find configuration directory: %w", err)
 		}
 
 		v.AddConfigPath(".")
@@ -55,20 +55,20 @@ func initParams(cmd *cobra.Command, params *ims.Config, configFile string) error
 		if err != nil {
 			// Ignore ConfigFileNotFoundError, since config file is not mandatory
 			if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-				return fmt.Errorf("unable to read configuration file: %v", err)
+				return fmt.Errorf("unable to read configuration file: %w", err)
 			}
 		}
 	} else {
 		v.SetConfigFile(configFile)
 		err = v.ReadInConfig()
 		if err != nil {
-			return fmt.Errorf("unable to read configuration file: %v", err)
+			return fmt.Errorf("unable to read configuration file: %w", err)
 		}
 	}
 
 	err = v.Unmarshal(params)
 	if err != nil {
-		return fmt.Errorf("unable to parse configuration file: %v", err)
+		return fmt.Errorf("unable to parse configuration file: %w", err)
 	}
 
 	return nil

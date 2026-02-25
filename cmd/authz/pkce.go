@@ -30,7 +30,7 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 			imsConfig.PKCE = true
 			resp, err := imsConfig.AuthorizeUser()
 			if err != nil {
-				return fmt.Errorf("error in user authorization: %v", err)
+				return fmt.Errorf("error in user authorization: %w", err)
 			}
 			fmt.Println(resp)
 			return nil
@@ -40,7 +40,7 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""}, "Scopes to request.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Scopes to request.")
 	cmd.Flags().BoolVarP(&imsConfig.PublicClient, "public", "b", false, "Public client, ignore secret.")
 	cmd.Flags().IntVarP(&imsConfig.Port, "port", "l", 8888, "Local port to be used by the OAuth Client.")
 

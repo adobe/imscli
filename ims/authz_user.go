@@ -38,14 +38,14 @@ func (i Config) validateAuthorizeUserConfig() error {
 		return fmt.Errorf("missing IMS base URL parameter")
 	case !validateURL(i.URL):
 		return fmt.Errorf("unable to parse URL parameter")
-	case i.Scopes[0] == "":
+	case len(i.Scopes) == 0 || i.Scopes[0] == "":
 		return fmt.Errorf("missing scopes parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client id parameter")
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
 	case i.ClientSecret == "":
-		if i.PublicClient == true {
+		if i.PublicClient {
 			log.Println("all needed parameters verified not empty")
 			return nil
 		}
@@ -63,7 +63,7 @@ func (i Config) AuthorizeUser() (string, error) {
 	// Perform parameter validation
 	err := i.validateAuthorizeUserConfig()
 	if err != nil {
-		return "", fmt.Errorf("invalid parameters for login user: %v", err)
+		return "", fmt.Errorf("invalid parameters for login user: %w", err)
 	}
 
 	// Use default port if not specified
@@ -74,7 +74,7 @@ func (i Config) AuthorizeUser() (string, error) {
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -82,7 +82,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return "", fmt.Errorf("error during client creation: %v", err)
+		return "", fmt.Errorf("error during client creation: %w", err)
 	}
 
 	server, err := login.NewServer(&login.ServerConfig{
@@ -106,7 +106,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		}),
 	})
 	if err != nil {
-		return "", fmt.Errorf("create authorization server: %v", err)
+		return "", fmt.Errorf("create authorization server: %w", err)
 	}
 
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
@@ -145,12 +145,12 @@ func (i Config) AuthorizeUser() (string, error) {
 	}
 
 	if err = server.Shutdown(context.Background()); err != nil {
-		return "", fmt.Errorf("error shutting down the local server: %v", err)
+		return "", fmt.Errorf("error shutting down the local server: %w", err)
 	}
 	log.Println("Local server shut down ...")
 
 	if serr != nil {
-		return "", fmt.Errorf("error negotiating the authorization code: %v", serr)
+		return "", fmt.Errorf("error negotiating the authorization code: %w", serr)
 	}
 	log.Println("No error from Authorization Code handler, server is successfully shut down.")
 

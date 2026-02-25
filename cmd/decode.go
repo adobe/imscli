@@ -29,7 +29,7 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 
 			decoded, err := imsConfig.DecodeToken()
 			if err != nil {
-				return fmt.Errorf("error decoding the token: %v", err)
+				return fmt.Errorf("error decoding the token: %w", err)
 			}
 
 			fmt.Println(decoded.Header)
