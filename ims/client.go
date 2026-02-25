@@ -22,13 +22,13 @@ func (i Config) httpClient() (*http.Client, error) {
 			t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 		}
 		client := &http.Client{
-			Timeout:   30 * time.Second,
+			Timeout:   time.Duration(i.Timeout) * time.Second,
 			Transport: t,
 		}
 		return client, nil
 	}
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: time.Duration(i.Timeout) * time.Second,
 	}
 	return client, nil
 }
