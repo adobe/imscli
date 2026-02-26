@@ -8,49 +8,25 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package output
+package pretty
 
 import (
-	"bytes"
-	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
-// captureStdout captures the output of a function that writes to stdout.
-func captureStdout(t *testing.T, fn func()) string {
-	t.Helper()
-	old := os.Stdout
-	r, w, err := os.Pipe()
-	if err != nil {
-		t.Fatalf("failed to create pipe: %v", err)
-	}
-	os.Stdout = w
-
-	fn()
-
-	w.Close()
-	os.Stdout = old
-
-	var buf bytes.Buffer
-	if _, err := io.Copy(&buf, r); err != nil {
-		t.Fatalf("failed to read pipe: %v", err)
-	}
-	return buf.String()
-}
-
-// loadExpected reads the expected output from a golden file in testdata/.
 func loadExpected(t *testing.T, filename string) string {
 	t.Helper()
 	data, err := os.ReadFile(filepath.Join("testdata", filename))
 	if err != nil {
 		t.Fatalf("failed to read golden file %s: %v", filename, err)
 	}
-	return string(data)
+	return strings.TrimSuffix(string(data), "\n")
 }
 
-func TestPrintPrettyJSON(t *testing.T) {
+func TestJSON(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
@@ -62,20 +38,16 @@ func TestPrintPrettyJSON(t *testing.T) {
 		{name: "empty object", input: `{}`, file: "empty_object.json"},
 		{name: "empty array", input: `[]`, file: "empty_array.json"},
 		{name: "nested objects", input: `{"a":{"b":{"c":1}}}`, file: "nested_objects.json"},
-		{name: "non-JSON is printed as-is", input: "this is not JSON", file: "non_json.txt"},
-		{name: "empty string is printed as-is", input: "", file: "empty_string.txt"},
+		{name: "non-JSON is returned as-is", input: "this is not JSON", file: "non_json.txt"},
+		{name: "empty string is returned as-is", input: "", file: "empty_string.txt"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			expected := loadExpected(t, tt.file)
-
-			got := captureStdout(t, func() {
-				PrintPrettyJSON(tt.input)
-			})
-
+			got := JSON(tt.input)
 			if got != expected {
-				t.Errorf("PrintPrettyJSON(%q)\ngot:\n%s\nexpected output is in testdata/%s", tt.input, got, tt.file)
+				t.Errorf("JSON(%q)\ngot:\n%s\nexpected:\n%s", tt.input, got, expected)
 			}
 		})
 	}
