@@ -144,7 +144,22 @@ func (i Config) AuthorizeUser() (string, error) {
 		serr = fmt.Errorf("user timed out")
 	}
 
-	if err = server.Shutdown(context.Background()); err != nil {
+	// Drain channels to prevent a deadlock between Shutdown() waiting for
+	// in-flight handlers and handlers blocking on unbuffered channel writes.
+	// See docs/oauth-shutdown-deadlock.md for a detailed explanation.
+	go func() {
+		for range server.Response() {
+		}
+	}()
+	go func() {
+		for range server.Error() {
+		}
+	}()
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err = server.Shutdown(shutdownCtx); err != nil {
 		return "", fmt.Errorf("error shutting down the local server: %w", err)
 	}
 	log.Println("Local server shut down ...")
