@@ -69,23 +69,8 @@ func (i Config) ValidateToken() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("create client: %w", err)
 	}
 
-	var token string
-	var tokenType ims.TokenType
-
-	switch {
-	case i.AccessToken != "":
-		token = i.AccessToken
-		tokenType = ims.AccessToken
-	case i.RefreshToken != "":
-		token = i.RefreshToken
-		tokenType = ims.RefreshToken
-	case i.DeviceToken != "":
-		token = i.DeviceToken
-		tokenType = ims.DeviceToken
-	case i.AuthorizationCode != "":
-		token = i.AuthorizationCode
-		tokenType = ims.AuthorizationCode
-	default:
+	token, tokenType, err := i.resolveToken()
+	if err != nil {
 		return TokenInfo{}, fmt.Errorf("unexpected error, broken validation")
 	}
 
