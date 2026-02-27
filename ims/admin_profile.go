@@ -18,7 +18,7 @@ import (
 )
 
 func (i Config) validateGetAdminProfileConfig() error {
-	switch i.ProfileApiVersion {
+	switch i.ProfileAPIVersion {
 	case "v1", "v2", "v3":
 	default:
 		return fmt.Errorf("invalid API version parameter, latest version is v3")
@@ -65,7 +65,7 @@ func (i Config) GetAdminProfile() (string, error) {
 
 	profile, err := c.GetAdminProfile(&ims.GetAdminProfileRequest{
 		ServiceToken: i.ServiceToken,
-		ApiVersion:   i.ProfileApiVersion,
+		ApiVersion:   i.ProfileAPIVersion,
 		ClientID:     i.ClientID,
 		Guid:         i.Guid,
 		AuthSrc:      i.AuthSrc,

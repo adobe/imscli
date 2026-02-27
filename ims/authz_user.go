@@ -26,11 +26,9 @@ import (
 
 const defaultPort = 8888
 
-/*
- * Validate that:
- *	- the ims.Config struct has the necessary parameters for AuthorizeUser
- *  - the provided environment exists
- */
+// Validate that:
+//   - the ims.Config struct has the necessary parameters for AuthorizeUser
+//   - the provided environment exists
 func (i Config) validateAuthorizeUserConfig() error {
 
 	switch {
