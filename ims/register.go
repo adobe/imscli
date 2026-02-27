@@ -15,8 +15,8 @@ type RegisterResponse struct {
 
 func (i Config) validateRegisterConfig() error {
 	switch {
-	case i.RegisterURL == "":
-		return fmt.Errorf("missing registration endpoint URL parameter")
+	case i.URL == "":
+		return fmt.Errorf("missing IMS base URL parameter")
 	case i.ClientName == "":
 		return fmt.Errorf("missing client name parameter")
 	case len(i.RedirectURIs) == 0:
@@ -47,7 +47,9 @@ func (i Config) Register() (RegisterResponse, error) {
   "redirect_uris": %s
 }`, i.ClientName, redirectURIsJSON))
 
-	req, err := http.NewRequest("POST", i.RegisterURL, payload)
+	endpoint := strings.TrimRight(i.URL, "/") + "/ims/register"
+
+	req, err := http.NewRequest("POST", endpoint, payload)
 	if err != nil {
 		return RegisterResponse{}, fmt.Errorf("error creating request: %v", err)
 	}

@@ -34,6 +34,12 @@ imscli authorize user help
 
 The complete documentation of the project is available in the [DOCUMENTATION.md](DOCUMENTATION.md) file.
 
+## Development Notes
+
+### PersistentPreRunE and subcommands
+
+The root command defines a `PersistentPreRunE` that loads configuration from flags, environment variables, and config files (see `cmd/root.go`). In cobra, if a subcommand defines its own `PersistentPreRunE`, it **overrides** the parent's — the root's `PersistentPreRunE` will not run for that subcommand or its children. If you need to add a `PersistentPreRunE` to a subcommand, you must explicitly call the parent's first.
+
 ## Contributing
 
 Contributions are welcomed! Read the [Contributing Guide](CONTRIBUTING.md) for more information.

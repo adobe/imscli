@@ -41,12 +41,10 @@ type Config struct {
 	Cascading             bool
 	Token                 string
 	Port                  int
-	PKCE                  bool
 	FullOutput            bool
 	Guid                  string
 	AuthSrc               string
 	DecodeFulfillableData bool
-	RegisterURL           string
 	ClientName            string
 	RedirectURIs          []string
 }
@@ -54,7 +52,6 @@ type Config struct {
 // Access token information
 type TokenInfo struct {
 	AccessToken string
-	Expires     int //(response.ExpiresIn * time.Millisecond),
 	Valid       bool
 	Info        string
 }

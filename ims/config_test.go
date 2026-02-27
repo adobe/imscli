@@ -224,6 +224,7 @@ func TestValidateAuthorizeUserConfig(t *testing.T) {
 		ClientSecret: "s",
 		Organization: "org",
 		Scopes:       []string{"openid"},
+		Port:         8888,
 	}
 	tests := []struct {
 		name    string
@@ -239,6 +240,7 @@ func TestValidateAuthorizeUserConfig(t *testing.T) {
 		{name: "missing clientID", config: withField(validConfig, func(c *Config) { c.ClientID = "" }), wantErr: "missing client id"},
 		{name: "missing organization", config: withField(validConfig, func(c *Config) { c.Organization = "" }), wantErr: "missing organization"},
 		{name: "missing secret non-public", config: withField(validConfig, func(c *Config) { c.ClientSecret = "" }), wantErr: "missing client secret"},
+		{name: "missing port", config: withField(validConfig, func(c *Config) { c.Port = 0 }), wantErr: "missing or invalid port"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -295,10 +297,10 @@ func TestValidateRegisterConfig(t *testing.T) {
 		config  Config
 		wantErr string
 	}{
-		{name: "valid", config: Config{RegisterURL: "https://example.com/register", ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: ""},
-		{name: "missing URL", config: Config{ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing registration endpoint URL"},
-		{name: "missing client name", config: Config{RegisterURL: "https://example.com/register", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing client name"},
-		{name: "missing redirect URIs", config: Config{RegisterURL: "https://example.com/register", ClientName: "app"}, wantErr: "missing redirect URIs"},
+		{name: "valid", config: Config{URL: "https://ims.example.com", ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: ""},
+		{name: "missing URL", config: Config{ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing IMS base URL"},
+		{name: "missing client name", config: Config{URL: "https://ims.example.com", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing client name"},
+		{name: "missing redirect URIs", config: Config{URL: "https://ims.example.com", ClientName: "app"}, wantErr: "missing redirect URIs"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

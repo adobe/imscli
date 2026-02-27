@@ -39,7 +39,6 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&imsConfig.RegisterURL, "url", "u", "", "Registration endpoint URL.")
 	cmd.Flags().StringVarP(&imsConfig.ClientName, "clientName", "n", "", "Client application name.")
 	cmd.Flags().StringSliceVarP(&imsConfig.RedirectURIs, "redirectURIs", "r", []string{}, "Redirect URIs (comma-separated or multiple flags).")
 

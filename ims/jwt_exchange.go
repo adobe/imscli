@@ -13,6 +13,7 @@ package ims
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/adobe/ims-go/ims"
@@ -29,14 +30,20 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %w", i.PrivateKeyPath, err)
 	}
+	defer func() {
+		for i := range key {
+			key[i] = 0
+		}
+	}()
 
 	// 	Metascopes are passed as generic claims with the format map[string]interface{}
 	//  where the strings are in the form: baseIMSUrl/s/metascope
 	//  and the interface{} is 'true'
 
+	baseURL := strings.TrimRight(i.URL, "/")
 	claims := make(map[string]interface{})
 	for _, metascope := range i.Metascopes {
-		claims[fmt.Sprintf("%s/s/%s", i.URL, metascope)] = true
+		claims[fmt.Sprintf("%s/s/%s", baseURL, metascope)] = true
 	}
 
 	r, err := c.ExchangeJWT(&ims.ExchangeJWTRequest{
@@ -54,6 +61,5 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	return TokenInfo{
 		AccessToken: r.AccessToken,
-		Expires:     int(r.ExpiresIn * time.Millisecond),
 	}, nil
 }
