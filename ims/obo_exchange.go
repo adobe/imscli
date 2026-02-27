@@ -37,9 +37,9 @@ func (i Config) validateOBOExchangeConfig() error {
 	case i.ClientSecret == "":
 		return fmt.Errorf("missing client secret parameter")
 	case i.AccessToken == "":
-		return fmt.Errorf("missing access token parameter (user token only; do not use service or impersonation tokens)")
-	case i.ServiceToken != "":
-		return fmt.Errorf("OBO exchange requires a user access token; do not use service token as subject token")
+		return fmt.Errorf("missing access token parameter (only access tokens are accepted)")
+	case len(i.Scopes) == 0 || (len(i.Scopes) == 1 && i.Scopes[0] == ""):
+		return fmt.Errorf("scopes are required for On-Behalf-Of exchange")
 	default:
 		return nil
 	}
@@ -47,7 +47,7 @@ func (i Config) validateOBOExchangeConfig() error {
 
 func (i Config) OBOExchange() (TokenInfo, error) {
 	if err := i.validateOBOExchangeConfig(); err != nil {
-		return TokenInfo{}, fmt.Errorf("invalid parameters for OBO exchange: %v", err)
+		return TokenInfo{}, fmt.Errorf("invalid parameters for On-Behalf-Of exchange: %v", err)
 	}
 
 	httpClient, err := i.httpClient()
@@ -55,47 +55,37 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
 	}
 
-	grantType := defaultOBOGrantType
-	if i.OBOGrantType != "" {
-		grantType = i.OBOGrantType
-	}
 	data := url.Values{}
-	data.Set("grant_type", grantType)
+	data.Set("grant_type", defaultOBOGrantType)
 	data.Set("client_id", i.ClientID)
 	data.Set("client_secret", i.ClientSecret)
 	data.Set("subject_token", i.AccessToken)
 	data.Set("subject_token_type", "urn:ietf:params:oauth:token-type:access_token")
 	data.Set("requested_token_type", "urn:ietf:params:oauth:token-type:access_token")
-	// Send scope only when explicitly set via -s. If omitted, don't set scope so IMS errors and user sees they must pass -s.
-	if len(i.Scopes) > 0 && (len(i.Scopes) != 1 || i.Scopes[0] != "") {
-		data.Set("scope", strings.Join(i.Scopes, ","))
-	}
+	data.Set("scope", strings.Join(i.Scopes, ","))
 
 	// OBO Token Exchange requires /ims/token/v4 (v3 does not support this grant type).
 	tokenURL := fmt.Sprintf("%s/ims/token/v4?client_id=%s", strings.TrimSuffix(i.URL, "/"), url.QueryEscape(i.ClientID))
 	req, err := http.NewRequest(http.MethodPost, tokenURL, strings.NewReader(data.Encode()))
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating OBO request: %v", err)
+		return TokenInfo{}, fmt.Errorf("error creating On-Behalf-Of request: %v", err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error during OBO exchange: %v", err)
+		return TokenInfo{}, fmt.Errorf("error during On-Behalf-Of exchange: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error reading OBO response: %v", err)
+		return TokenInfo{}, fmt.Errorf("error reading On-Behalf-Of response: %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		errMsg := fmt.Sprintf("OBO exchange failed (status %d): %s", resp.StatusCode, string(body))
+		errMsg := fmt.Sprintf("On-Behalf-Of exchange failed (status %d): %s", resp.StatusCode, string(body))
 		if resp.StatusCode == http.StatusBadRequest {
-			if strings.Contains(string(body), "unsupported_grant_type") {
-				errMsg += " — try --grantType with the value your IMS environment expects, or check IMS/OBO documentation."
-			}
 			if strings.Contains(string(body), "invalid_scope") {
 				errMsg += " — IMS may be rejecting the subject token's scopes for this client. Ensure the client has Token exchange enabled and allowed scopes in the portal, or try a user token obtained with fewer scopes."
 			}
@@ -108,13 +98,10 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 		ExpiresIn   int    `json:"expires_in"`
 	}
 	if err := json.Unmarshal(body, &out); err != nil {
-		return TokenInfo{}, fmt.Errorf("error decoding OBO response: %v", err)
+		return TokenInfo{}, fmt.Errorf("error decoding On-Behalf-Of response: %v", err)
 	}
 
-	expiresMs := 0
-	if out.ExpiresIn > 0 {
-		expiresMs = out.ExpiresIn * int(time.Second/time.Millisecond)
-	}
+	expiresMs := out.ExpiresIn * int(time.Second/time.Millisecond)
 
 	return TokenInfo{
 		AccessToken: out.AccessToken,
