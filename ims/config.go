@@ -53,8 +53,7 @@ type Config struct {
 	AuthSrc               string
 	DecodeFulfillableData bool
 	ClientName            string
-	RedirectURIs          []string
-	OBOGrantType          string // optional; if set, used for OBO token exchange (e.g. when IMS expects a specific grant type)
+	RedirectURIs []string
 }
 
 // TokenInfo holds the response data from token-related IMS API calls.
