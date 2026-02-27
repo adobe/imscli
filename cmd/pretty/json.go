@@ -8,23 +8,19 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package output
+package pretty
 
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 )
 
-// PrintPrettyJSON prints a JSON string with indentation.
-// If the input is not valid JSON, it prints the original string.
-func PrintPrettyJSON(jsonStr string) {
-	var prettyBuf bytes.Buffer
-	err := json.Indent(&prettyBuf, []byte(jsonStr), "", "  ")
-	if err != nil {
-		// Not valid JSON, print as-is
-		fmt.Println(jsonStr)
-		return
+// JSON returns the input with JSON indentation applied.
+// If the input is not valid JSON, it returns the original string.
+func JSON(jsonStr string) string {
+	var buf bytes.Buffer
+	if err := json.Indent(&buf, []byte(jsonStr), "", "  "); err != nil {
+		return jsonStr
 	}
-	fmt.Println(prettyBuf.String())
+	return buf.String()
 }

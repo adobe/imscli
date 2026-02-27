@@ -13,6 +13,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/adobe/imscli/cmd/pretty"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -32,9 +33,8 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 				return fmt.Errorf("error decoding the token: %w", err)
 			}
 
-			fmt.Println(decoded.Header)
-			fmt.Println()
-			fmt.Println(decoded.Payload)
+			output := fmt.Sprintf(`{"header":%s,"payload":%s}`, decoded.Header, decoded.Payload)
+			fmt.Println(pretty.JSON(output))
 
 			return nil
 		},

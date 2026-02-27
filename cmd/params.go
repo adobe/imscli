@@ -19,14 +19,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-/*
-Centralize in one place the processing of:
-	- Environment variables.
-	- Configuration file.
-	- Command parameters.
-
-The processing function only needs to be run as the PersistentPreRunE in the root command.
-*/
+// Centralize in one place the processing of:
+//   - Environment variables.
+//   - Configuration file.
+//   - Command parameters.
+//
+// The processing function only needs to be run as the PersistentPreRunE in the root command.
 
 func initParams(cmd *cobra.Command, params *ims.Config, configFile string) error {
 	v := viper.New()

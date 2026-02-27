@@ -13,8 +13,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/adobe/imscli/cmd/pretty"
 	"github.com/adobe/imscli/ims"
-	"github.com/adobe/imscli/output"
 	"github.com/spf13/cobra"
 )
 
@@ -33,13 +33,13 @@ func organizationsCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error in get organizations cmd: %w", err)
 			}
-			output.PrintPrettyJSON(resp)
+			fmt.Println(pretty.JSON(resp))
 			return nil
 		},
 	}
 
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
-	cmd.Flags().StringVarP(&imsConfig.OrgsApiVersion, "orgsApiVersion", "a", "v5", "Organizations API version.")
+	cmd.Flags().StringVarP(&imsConfig.OrgsAPIVersion, "orgsApiVersion", "a", "v5", "Organizations API version.")
 
 	return cmd
 }

@@ -13,8 +13,8 @@ package admin
 import (
 	"fmt"
 
+	"github.com/adobe/imscli/cmd/pretty"
 	"github.com/adobe/imscli/ims"
-	"github.com/adobe/imscli/output"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +33,7 @@ func OrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error in get admin organizations cmd: %w", err)
 			}
-			output.PrintPrettyJSON(resp)
+			fmt.Println(pretty.JSON(resp))
 			return nil
 		},
 	}
@@ -41,7 +41,7 @@ func OrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
-	cmd.Flags().StringVarP(&imsConfig.OrgsApiVersion, "orgsApiVersion", "a", "v5", "Admin organizations API version.")
+	cmd.Flags().StringVarP(&imsConfig.OrgsAPIVersion, "orgsApiVersion", "a", "v5", "Admin organizations API version.")
 
 	return cmd
 }

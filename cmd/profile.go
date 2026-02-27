@@ -13,8 +13,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/adobe/imscli/cmd/pretty"
 	"github.com/adobe/imscli/ims"
-	"github.com/adobe/imscli/output"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "profile",
-		Short: "Requests an user profile.",
+		Short: "Requests a user profile.",
 		Long:  "Requests the user profile associated to the provided access token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
@@ -32,13 +32,13 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error in get profile cmd: %w", err)
 			}
-			output.PrintPrettyJSON(resp)
+			fmt.Println(pretty.JSON(resp))
 			return nil
 		},
 	}
 
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
-	cmd.Flags().StringVarP(&imsConfig.ProfileApiVersion, "profileApiVersion", "a", "v1", "Profile API version.")
+	cmd.Flags().StringVarP(&imsConfig.ProfileAPIVersion, "profileApiVersion", "a", "v1", "Profile API version.")
 	cmd.Flags().BoolVarP(&imsConfig.DecodeFulfillableData, "decodeFulfillableData", "d", false, "Decode the fulfillable_data in the product context.")
 
 	return cmd

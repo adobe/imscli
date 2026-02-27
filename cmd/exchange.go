@@ -47,5 +47,7 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
 			"scopes are requested the same scopes of the original token will be provided")
 
+	cmd.MarkFlagsMutuallyExclusive("organization", "userID")
+
 	return cmd
 }

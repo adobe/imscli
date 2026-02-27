@@ -26,11 +26,9 @@ import (
 
 const defaultPort = 8888
 
-/*
- * Validate that:
- *	- the ims.Config struct has the necessary parameters for AuthorizeUser
- *  - the provided environment exists
- */
+// Validate that:
+//   - the ims.Config struct has the necessary parameters for AuthorizeUser
+//   - the provided environment exists
 func (i Config) validateAuthorizeUserConfig() error {
 
 	switch {
@@ -127,7 +125,13 @@ func (i Config) AuthorizeUser() (string, error) {
 		fmt.Fprintf(os.Stderr, "error launching the browser, open it and visit %s\n", localUrl)
 	}
 
-	go server.Serve(listener)
+	// Capture Serve errors via a buffered channel. Buffered so the goroutine
+	// can always write and exit, even if nobody reads (e.g., a response arrived
+	// first). See docs/oauth-serve-error.md for a detailed explanation.
+	serveCh := make(chan error, 1)
+	go func() {
+		serveCh <- server.Serve(listener)
+	}()
 
 	var (
 		serr error
@@ -139,6 +143,8 @@ func (i Config) AuthorizeUser() (string, error) {
 		log.Println("The IMS HTTP handler returned an error message.")
 	case resp = <-server.Response():
 		log.Println("The IMS HTTP handler returned a message.")
+	case serr = <-serveCh:
+		log.Println("The local server stopped unexpectedly.")
 	case <-time.After(time.Minute * 5):
 		fmt.Fprintf(os.Stderr, "Timeout reached waiting for the user to finish the authentication ...\n")
 		serr = fmt.Errorf("user timed out")
