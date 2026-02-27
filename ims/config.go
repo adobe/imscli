@@ -41,7 +41,6 @@ type Config struct {
 	Cascading             bool
 	Token                 string
 	Port                  int
-	PKCE                  bool
 	FullOutput            bool
 	Guid                  string
 	AuthSrc               string

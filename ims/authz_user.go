@@ -55,9 +55,17 @@ func (i Config) validateAuthorizeUserConfig() error {
 	return nil
 }
 
-// AuthorizeUser uses the standard Oauth2 authorization code grant flow. The Oauth2 configuration is
-// taken from the Config struct.
+// AuthorizeUser uses the standard OAuth2 authorization code grant flow.
 func (i Config) AuthorizeUser() (string, error) {
+	return i.authorizeUser(false)
+}
+
+// AuthorizeUserPKCE uses the OAuth2 authorization code grant flow with PKCE.
+func (i Config) AuthorizeUserPKCE() (string, error) {
+	return i.authorizeUser(true)
+}
+
+func (i Config) authorizeUser(pkce bool) (string, error) {
 	// Perform parameter validation
 	err := i.validateAuthorizeUserConfig()
 	if err != nil {
@@ -80,7 +88,7 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
-		UsePKCE:      i.PKCE,
+		UsePKCE:      pkce,
 		RedirectURI:  fmt.Sprintf("http://localhost:%d", port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
