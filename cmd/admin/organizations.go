@@ -38,7 +38,7 @@ func OrganizationsCmd(imsConfig *ims.Config) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&imsConfig.Guid, "guid", "g", "", "User ID.")
-	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
+	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "A", "", "Authorization source.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
 	cmd.Flags().StringVarP(&imsConfig.OrgsAPIVersion, "orgsApiVersion", "a", "v5", "Admin organizations API version.")
