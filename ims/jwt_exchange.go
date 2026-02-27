@@ -20,17 +20,9 @@ import (
 
 func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return TokenInfo{}, fmt.Errorf("create client: %w", err)
+		return TokenInfo{}, fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	key, err := os.ReadFile(i.PrivateKeyPath)

@@ -70,17 +70,9 @@ func (i Config) AuthorizeUser() (string, error) {
 		port = defaultPort
 	}
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return "", fmt.Errorf("error during client creation: %w", err)
+		return "", fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	server, err := login.NewServer(&login.ServerConfig{

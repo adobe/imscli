@@ -46,22 +46,6 @@ return parsedURL.Scheme != "" && parsedURL.Host != ""
 
 ## 3. Structural Improvements
 
-### 3.1 Extract IMS client creation into a helper
-
-Every method in the `ims` package repeats:
-
-```go
-httpClient, err := i.httpClient()
-// ...
-c, err := ims.NewClient(&ims.ClientConfig{URL: i.URL, Client: httpClient})
-```
-
-This 8-line boilerplate appears in ~10 files. Extract into:
-
-```go
-func (i Config) newIMSClient() (*ims.Client, error) { ... }
-```
-
 ### 3.2 Deduplicate validate subcommands
 
 All four files in `cmd/validate/` have identical `RunE` logic — only the flag binding
@@ -231,6 +215,7 @@ The following items have been implemented and merged:
 - **N3** Fix "decodification" → "decoding" (#69)
 - **2.1** Rename `ProfileApiVersion` → `ProfileAPIVersion`, `OrgsApiVersion` → `OrgsAPIVersion` (#70)
 - **2.5** Replace C-style `/* */` block comments with `//` line comments (#70)
+- **3.1** Extract `newIMSClient()` helper, deduplicate 13 call sites (#70)
 
 ### Skipped (not applicable)
 

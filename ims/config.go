@@ -81,6 +81,17 @@ func (i Config) resolveToken() (string, ims.TokenType, error) {
 	}
 }
 
+func (i Config) newIMSClient() (*ims.Client, error) {
+	httpClient, err := i.httpClient()
+	if err != nil {
+		return nil, fmt.Errorf("error creating the HTTP client: %w", err)
+	}
+	return ims.NewClient(&ims.ClientConfig{
+		URL:    i.URL,
+		Client: httpClient,
+	})
+}
+
 func validateURL(u string) bool {
 	parsedURL, err := url.Parse(u)
 	if err != nil {

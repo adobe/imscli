@@ -44,17 +44,9 @@ func (i Config) GetOrganizations() (string, error) {
 		return "", fmt.Errorf("invalid parameters for organizations: %w", err)
 	}
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return "", fmt.Errorf("error creating the client: %w", err)
+		return "", fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{

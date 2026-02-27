@@ -19,17 +19,9 @@ import (
 // AuthorizeClientCredentials : Client Credentials OAuth flow
 func (i Config) AuthorizeClientCredentials() (string, error) {
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return "", fmt.Errorf("create client: %w", err)
+		return "", fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	r, err := c.Token(&ims.TokenRequest{

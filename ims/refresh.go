@@ -38,17 +38,9 @@ func (i Config) Refresh() (RefreshInfo, error) {
 		return RefreshInfo{}, fmt.Errorf("invalid parameters for token refresh: %w", err)
 	}
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return RefreshInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return RefreshInfo{}, fmt.Errorf("create client: %w", err)
+		return RefreshInfo{}, fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	r, err := c.RefreshToken(&ims.RefreshTokenRequest{
