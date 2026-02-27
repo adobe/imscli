@@ -24,8 +24,6 @@ import (
 	"github.com/pkg/browser"
 )
 
-const defaultPort = 8888
-
 // Validate that:
 //   - the ims.Config struct has the necessary parameters for AuthorizeUser
 //   - the provided environment exists
@@ -42,6 +40,8 @@ func (i Config) validateAuthorizeUserConfig() error {
 		return fmt.Errorf("missing client id parameter")
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
+	case i.Port <= 0:
+		return fmt.Errorf("missing or invalid port parameter")
 	case i.ClientSecret == "":
 		if i.PublicClient {
 			log.Println("all needed parameters verified not empty")
@@ -55,19 +55,21 @@ func (i Config) validateAuthorizeUserConfig() error {
 	return nil
 }
 
-// AuthorizeUser uses the standard Oauth2 authorization code grant flow. The Oauth2 configuration is
-// taken from the Config struct.
+// AuthorizeUser uses the standard OAuth2 authorization code grant flow.
 func (i Config) AuthorizeUser() (string, error) {
+	return i.authorizeUser(false)
+}
+
+// AuthorizeUserPKCE uses the OAuth2 authorization code grant flow with PKCE.
+func (i Config) AuthorizeUserPKCE() (string, error) {
+	return i.authorizeUser(true)
+}
+
+func (i Config) authorizeUser(pkce bool) (string, error) {
 	// Perform parameter validation
 	err := i.validateAuthorizeUserConfig()
 	if err != nil {
 		return "", fmt.Errorf("invalid parameters for login user: %w", err)
-	}
-
-	// Use default port if not specified
-	port := i.Port
-	if port == 0 {
-		port = defaultPort
 	}
 
 	c, err := i.newIMSClient()
@@ -80,8 +82,8 @@ func (i Config) AuthorizeUser() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
-		UsePKCE:      i.PKCE,
-		RedirectURI:  fmt.Sprintf("http://localhost:%d", port),
+		UsePKCE:      pkce,
+		RedirectURI:  fmt.Sprintf("http://localhost:%d", i.Port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
 				<h1>An error occurred</h1>
@@ -99,15 +101,15 @@ func (i Config) AuthorizeUser() (string, error) {
 		return "", fmt.Errorf("create authorization server: %w", err)
 	}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", i.Port))
 	if err != nil {
-		return "", fmt.Errorf("unable to listen at port %d", port)
+		return "", fmt.Errorf("unable to listen at port %d", i.Port)
 	}
 	defer listener.Close()
 
 	log.Println("Local server successfully launched and contacted.")
 
-	localUrl := fmt.Sprintf("http://localhost:%d/", port)
+	localUrl := fmt.Sprintf("http://localhost:%d/", i.Port)
 
 	// Suppress "Opening in existing browser session." messages from chromium-based
 	// browsers. The CLI token output goes to stdout, so stray browser messages

@@ -33,10 +33,10 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 				return fmt.Errorf("error during the token refresh: %w", err)
 			}
 			if imsConfig.FullOutput {
-				data := map[string]interface{}{
-					"access_token":  resp.AccessToken,
-					"refresh_token": resp.RefreshToken,
-				}
+				data := struct {
+					AccessToken  string `json:"access_token"`
+					RefreshToken string `json:"refresh_token"`
+				}{resp.AccessToken, resp.RefreshToken}
 				jsonData, err := json.MarshalIndent(data, "", "  ")
 				if err != nil {
 					return fmt.Errorf("error marshalling full JSON response: %w", err)

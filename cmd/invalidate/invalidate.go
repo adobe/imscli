@@ -68,7 +68,7 @@ func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		flagName: "refreshToken", field: &imsConfig.RefreshToken,
 		successMsg: "Refresh token successfully invalidated.",
 		extraFlags: func(cmd *cobra.Command, c *ims.Config) {
-			cmd.Flags().BoolVarP(&c.Cascading, "cascading", "a", false,
+			cmd.Flags().BoolVarP(&c.Cascading, "cascading", "C", false,
 				"Also invalidate all tokens obtained with the refresh token.")
 		},
 	})
@@ -80,7 +80,7 @@ func DeviceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		flagName: "deviceToken", field: &imsConfig.DeviceToken,
 		successMsg: "Token invalidated successfully.",
 		extraFlags: func(cmd *cobra.Command, c *ims.Config) {
-			cmd.Flags().BoolVarP(&c.Cascading, "cascading", "a", false,
+			cmd.Flags().BoolVarP(&c.Cascading, "cascading", "C", false,
 				"Also invalidate all tokens obtained with the device token.")
 		},
 	})
@@ -92,7 +92,7 @@ func ServiceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		flagName: "serviceToken", field: &imsConfig.ServiceToken,
 		successMsg: "Service token successfully invalidated.",
 		extraFlags: func(cmd *cobra.Command, c *ims.Config) {
-			cmd.Flags().StringVarP(&c.ClientSecret, "clientSecret", "s", "", "IMS Client Secret.")
+			cmd.Flags().StringVarP(&c.ClientSecret, "clientSecret", "p", "", "IMS Client Secret.")
 		},
 	})
 }
