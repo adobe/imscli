@@ -295,10 +295,10 @@ func TestValidateRegisterConfig(t *testing.T) {
 		config  Config
 		wantErr string
 	}{
-		{name: "valid", config: Config{RegisterURL: "https://example.com/register", ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: ""},
-		{name: "missing URL", config: Config{ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing registration endpoint URL"},
-		{name: "missing client name", config: Config{RegisterURL: "https://example.com/register", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing client name"},
-		{name: "missing redirect URIs", config: Config{RegisterURL: "https://example.com/register", ClientName: "app"}, wantErr: "missing redirect URIs"},
+		{name: "valid", config: Config{URL: "https://ims.example.com", ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: ""},
+		{name: "missing URL", config: Config{ClientName: "app", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing IMS base URL"},
+		{name: "missing client name", config: Config{URL: "https://ims.example.com", RedirectURIs: []string{"https://example.com/cb"}}, wantErr: "missing client name"},
+		{name: "missing redirect URIs", config: Config{URL: "https://ims.example.com", ClientName: "app"}, wantErr: "missing redirect URIs"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
