@@ -47,6 +47,7 @@ func RootCmd(version string) *cobra.Command {
 	cmd.PersistentFlags().IntVar(&imsConfig.Timeout, "timeout", 30, "HTTP client timeout in seconds.")
 
 	cmd.AddCommand(
+		oboExchangeCmd(imsConfig),
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),

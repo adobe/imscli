@@ -98,6 +98,3 @@ scopes:
   - openid
   - session
 
-user@host$ imscli login user
-```
-

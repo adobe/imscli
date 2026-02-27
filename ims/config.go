@@ -48,7 +48,7 @@ type Config struct {
 	DecodeFulfillableData bool
 	RegisterURL           string
 	ClientName            string
-	RedirectURIs          []string
+	RedirectURIs []string
 }
 
 // Access token information
