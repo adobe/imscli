@@ -24,8 +24,6 @@ import (
 	"github.com/pkg/browser"
 )
 
-const defaultPort = 8888
-
 // Validate that:
 //   - the ims.Config struct has the necessary parameters for AuthorizeUser
 //   - the provided environment exists
@@ -42,6 +40,8 @@ func (i Config) validateAuthorizeUserConfig() error {
 		return fmt.Errorf("missing client id parameter")
 	case i.Organization == "":
 		return fmt.Errorf("missing organization parameter")
+	case i.Port <= 0:
+		return fmt.Errorf("missing or invalid port parameter")
 	case i.ClientSecret == "":
 		if i.PublicClient {
 			log.Println("all needed parameters verified not empty")
@@ -72,12 +72,6 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		return "", fmt.Errorf("invalid parameters for login user: %w", err)
 	}
 
-	// Use default port if not specified
-	port := i.Port
-	if port == 0 {
-		port = defaultPort
-	}
-
 	c, err := i.newIMSClient()
 	if err != nil {
 		return "", fmt.Errorf("error creating the IMS client: %w", err)
@@ -89,7 +83,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
 		UsePKCE:      pkce,
-		RedirectURI:  fmt.Sprintf("http://localhost:%d", port),
+		RedirectURI:  fmt.Sprintf("http://localhost:%d", i.Port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, `
 				<h1>An error occurred</h1>
@@ -107,15 +101,15 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		return "", fmt.Errorf("create authorization server: %w", err)
 	}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", i.Port))
 	if err != nil {
-		return "", fmt.Errorf("unable to listen at port %d", port)
+		return "", fmt.Errorf("unable to listen at port %d", i.Port)
 	}
 	defer listener.Close()
 
 	log.Println("Local server successfully launched and contacted.")
 
-	localUrl := fmt.Sprintf("http://localhost:%d/", port)
+	localUrl := fmt.Sprintf("http://localhost:%d/", i.Port)
 
 	// Suppress "Opening in existing browser session." messages from chromium-based
 	// browsers. The CLI token output goes to stdout, so stray browser messages
