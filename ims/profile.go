@@ -24,7 +24,7 @@ import (
 )
 
 func (i Config) validateGetProfileConfig() error {
-	switch i.ProfileApiVersion {
+	switch i.ProfileAPIVersion {
 	case "v1", "v2", "v3":
 	default:
 		return fmt.Errorf("invalid API version parameter, latest version is v3")
@@ -64,7 +64,7 @@ func (i Config) GetProfile() (string, error) {
 
 	profile, err := c.GetProfile(&ims.GetProfileRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion:  i.ProfileApiVersion,
+		ApiVersion:  i.ProfileAPIVersion,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error getting profile: %w", err)

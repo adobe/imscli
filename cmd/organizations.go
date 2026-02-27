@@ -39,7 +39,7 @@ func organizationsCmd(imsConfig *ims.Config) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "Access token.")
-	cmd.Flags().StringVarP(&imsConfig.OrgsApiVersion, "orgsApiVersion", "a", "v5", "Organizations API version.")
+	cmd.Flags().StringVarP(&imsConfig.OrgsAPIVersion, "orgsApiVersion", "a", "v5", "Organizations API version.")
 
 	return cmd
 }

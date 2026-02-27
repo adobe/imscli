@@ -17,9 +17,7 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-/*
- * Invalidate a token
- */
+// Invalidate a token.
 func (i Config) validateInvalidateTokenConfig() error {
 
 	switch {

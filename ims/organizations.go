@@ -19,7 +19,7 @@ import (
 
 func (i Config) validateGetOrganizationsConfig() error {
 
-	switch i.OrgsApiVersion {
+	switch i.OrgsAPIVersion {
 	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
 		return fmt.Errorf("invalid API version parameter, use something like v5")
@@ -59,7 +59,7 @@ func (i Config) GetOrganizations() (string, error) {
 
 	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
 		AccessToken: i.AccessToken,
-		ApiVersion:  i.OrgsApiVersion,
+		ApiVersion:  i.OrgsAPIVersion,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error getting organizations: %w", err)
