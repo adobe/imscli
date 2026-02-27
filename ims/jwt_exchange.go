@@ -61,6 +61,5 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	return TokenInfo{
 		AccessToken: r.AccessToken,
-		Expires:     int(r.ExpiresIn * time.Millisecond),
 	}, nil
 }

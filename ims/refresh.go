@@ -12,8 +12,8 @@ package ims
 
 import (
 	"fmt"
+
 	"github.com/adobe/ims-go/ims"
-	"time"
 )
 
 func (i Config) validateRefreshConfig() error {
@@ -56,7 +56,6 @@ func (i Config) Refresh() (RefreshInfo, error) {
 	return RefreshInfo{
 		TokenInfo: TokenInfo{
 			AccessToken: r.AccessToken,
-			Expires:     int(r.ExpiresIn * time.Second),
 		},
 		RefreshToken: r.RefreshToken,
 	}, nil

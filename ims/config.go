@@ -52,7 +52,6 @@ type Config struct {
 // Access token information
 type TokenInfo struct {
 	AccessToken string
-	Expires     int //(response.ExpiresIn * time.Millisecond),
 	Valid       bool
 	Info        string
 }
