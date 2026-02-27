@@ -12,7 +12,7 @@ package ims
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/adobe/ims-go/ims"
@@ -22,7 +22,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %v", err)
+		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -30,12 +30,12 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("create client: %v", err)
+		return TokenInfo{}, fmt.Errorf("create client: %w", err)
 	}
 
-	key, err := ioutil.ReadFile(i.PrivateKeyPath)
+	key, err := os.ReadFile(i.PrivateKeyPath)
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %v", i.PrivateKeyPath, err)
+		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %w", i.PrivateKeyPath, err)
 	}
 
 	// 	Metascopes are passed as generic claims with the format map[string]interface{}
@@ -57,7 +57,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		Claims:       claims,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("exchange JWT: %v", err)
+		return TokenInfo{}, fmt.Errorf("exchange JWT: %w", err)
 	}
 
 	return TokenInfo{

@@ -29,7 +29,7 @@ func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {
-				return fmt.Errorf("error invalidating the refresh token: %v", err)
+				return fmt.Errorf("error invalidating the refresh token: %w", err)
 			}
 			fmt.Println("Refresh token successfully invalidated.")
 			return nil

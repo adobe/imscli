@@ -29,7 +29,7 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.AuthorizeClientCredentials()
 			if err != nil {
-				return fmt.Errorf("error in login service: %v", err)
+				return fmt.Errorf("error in login service: %w", err)
 			}
 			fmt.Println(resp)
 			return nil
@@ -38,7 +38,7 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""}, "Scopes to request.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Scopes to request.")
 
 	return cmd
 }

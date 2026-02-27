@@ -29,7 +29,7 @@ func ServiceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {
-				return fmt.Errorf("error invalidating the service token: %v", err)
+				return fmt.Errorf("error invalidating the service token: %w", err)
 			}
 			fmt.Println("Service token successfully invalidated.")
 			return nil

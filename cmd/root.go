@@ -19,7 +19,7 @@ import (
 )
 
 func RootCmd(version string) *cobra.Command {
-	var verbose bool = false
+	var verbose bool
 	var configFile string
 	var imsConfig = &ims.Config{}
 
@@ -44,6 +44,7 @@ func RootCmd(version string) *cobra.Command {
 	cmd.PersistentFlags().BoolVarP(&imsConfig.ProxyIgnoreTLS, "proxyIgnoreTLS", "T", false,
 		"Ignore TLS certificate verification (only valid when connecting through a proxy).")
 	cmd.PersistentFlags().StringVarP(&configFile, "configFile", "f", "", "Configuration file.")
+	cmd.PersistentFlags().IntVar(&imsConfig.Timeout, "timeout", 30, "HTTP client timeout in seconds.")
 
 	cmd.AddCommand(
 		oboExchangeCmd(imsConfig),
@@ -56,6 +57,7 @@ func RootCmd(version string) *cobra.Command {
 		decodeCmd(imsConfig),
 		refreshCmd(imsConfig),
 		adminCmd(imsConfig),
+		dcrCmd(imsConfig),
 	)
 	return cmd
 }

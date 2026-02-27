@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/adobe/imscli/ims"
+	"github.com/adobe/imscli/output"
 	"github.com/spf13/cobra"
 )
 
@@ -28,9 +29,9 @@ func ProfileCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.GetAdminProfile()
 			if err != nil {
-				return fmt.Errorf("error in get admin profile cmd: %v", err)
+				return fmt.Errorf("error in get admin profile cmd: %w", err)
 			}
-			fmt.Println(resp)
+			output.PrintPrettyJSON(resp)
 			return nil
 		},
 	}

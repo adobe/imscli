@@ -21,7 +21,7 @@ func (i Config) AuthorizeService() (string, error) {
 
 	httpClient, err := i.httpClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %v", err)
+		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
 	}
 
 	c, err := ims.NewClient(&ims.ClientConfig{
@@ -29,7 +29,7 @@ func (i Config) AuthorizeService() (string, error) {
 		Client: httpClient,
 	})
 	if err != nil {
-		return "", fmt.Errorf("create client: %v", err)
+		return "", fmt.Errorf("create client: %w", err)
 	}
 
 	r, err := c.Token(&ims.TokenRequest{
@@ -38,7 +38,7 @@ func (i Config) AuthorizeService() (string, error) {
 		Code:         i.AuthorizationCode,
 	})
 	if err != nil {
-		return "", fmt.Errorf("request token: %v", err)
+		return "", fmt.Errorf("request token: %w", err)
 	}
 
 	return r.AccessToken, nil

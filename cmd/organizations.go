@@ -31,7 +31,7 @@ func organizationsCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.GetOrganizations()
 			if err != nil {
-				return fmt.Errorf("error in get organizations cmd: %v", err)
+				return fmt.Errorf("error in get organizations cmd: %w", err)
 			}
 			output.PrintPrettyJSON(resp)
 			return nil

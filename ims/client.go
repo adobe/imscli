@@ -16,20 +16,19 @@ func (i Config) httpClient() (*http.Client, error) {
 		if err != nil {
 			return nil, fmt.Errorf("proxy provided but its URL is malformed")
 		}
-		t := &http.Transport{
-			Proxy: http.ProxyURL(p),
-		}
+		t := http.DefaultTransport.(*http.Transport).Clone()
+		t.Proxy = http.ProxyURL(p)
 		if i.ProxyIgnoreTLS {
 			t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 		}
 		client := &http.Client{
-			Timeout:   30 * time.Second,
+			Timeout:   time.Duration(i.Timeout) * time.Second,
 			Transport: t,
 		}
 		return client, nil
 	}
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: time.Duration(i.Timeout) * time.Second,
 	}
 	return client, nil
 }

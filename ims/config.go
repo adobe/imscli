@@ -11,7 +11,10 @@
 package ims
 
 import (
+	"fmt"
 	"net/url"
+
+	"github.com/adobe/ims-go/ims"
 )
 
 type Config struct {
@@ -59,6 +62,23 @@ type TokenInfo struct {
 type RefreshInfo struct {
 	TokenInfo
 	RefreshToken string
+}
+
+func (i Config) resolveToken() (string, ims.TokenType, error) {
+	switch {
+	case i.AccessToken != "":
+		return i.AccessToken, ims.AccessToken, nil
+	case i.RefreshToken != "":
+		return i.RefreshToken, ims.RefreshToken, nil
+	case i.DeviceToken != "":
+		return i.DeviceToken, ims.DeviceToken, nil
+	case i.ServiceToken != "":
+		return i.ServiceToken, ims.ServiceToken, nil
+	case i.AuthorizationCode != "":
+		return i.AuthorizationCode, ims.AuthorizationCode, nil
+	default:
+		return "", "", fmt.Errorf("no token provided")
+	}
 }
 
 func validateURL(u string) bool {

@@ -30,7 +30,7 @@ func AuthzCodeCmd(imsConfig *ims.Config) *cobra.Command {
 
 			resp, err := imsConfig.ValidateToken()
 			if err != nil {
-				return fmt.Errorf("error validating the authorization code: %v", err)
+				return fmt.Errorf("error validating the authorization code: %w", err)
 			}
 			if !resp.Valid {
 				return fmt.Errorf("invalid token: %v", resp.Info)

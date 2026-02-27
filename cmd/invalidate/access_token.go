@@ -29,7 +29,7 @@ func AccessTokenCmd(imsConfig *ims.Config) *cobra.Command {
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {
-				return fmt.Errorf("error invalidating the access token: %v", err)
+				return fmt.Errorf("error invalidating the access token: %w", err)
 			}
 			fmt.Println("Token invalidated successfully.")
 			return nil
