@@ -33,7 +33,7 @@ func (i Config) validateDecodeTokenConfig() error {
 func (i Config) DecodeToken() (*DecodedToken, error) {
 	err := i.validateDecodeTokenConfig()
 	if err != nil {
-		return nil, fmt.Errorf("incomplete parameters for token decodification: %w", err)
+		return nil, fmt.Errorf("incomplete parameters for token decoding: %w", err)
 	}
 	parts := strings.Split(i.Token, ".")
 

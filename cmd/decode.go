@@ -33,9 +33,8 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 				return fmt.Errorf("error decoding the token: %w", err)
 			}
 
-			fmt.Println(pretty.JSON(decoded.Header))
-			fmt.Println()
-			fmt.Println(pretty.JSON(decoded.Payload))
+			output := fmt.Sprintf(`{"header":%s,"payload":%s}`, decoded.Header, decoded.Payload)
+			fmt.Println(pretty.JSON(output))
 
 			return nil
 		},

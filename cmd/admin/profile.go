@@ -39,7 +39,7 @@ func ProfileCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.AuthSrc, "authSrc", "s", "", "Authorization source.")
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ServiceToken, "serviceToken", "t", "", "Service token.")
-	cmd.Flags().StringVarP(&imsConfig.ProfileApiVersion, "profileApiVersion", "a", "v1", "Admin profile API version.")
+	cmd.Flags().StringVarP(&imsConfig.ProfileAPIVersion, "profileApiVersion", "a", "v1", "Admin profile API version.")
 
 	return cmd
 }

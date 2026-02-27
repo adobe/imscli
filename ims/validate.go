@@ -17,11 +17,9 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-/*
- * Validate that the config includes:
- * - One clientID
- * - One token to validate
- */
+// Validate that the config includes:
+// - One clientID
+// - One token to validate
 
 func (i Config) validateValidateTokenConfig() error {
 
