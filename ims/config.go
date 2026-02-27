@@ -41,12 +41,10 @@ type Config struct {
 	Cascading             bool
 	Token                 string
 	Port                  int
-	PKCE                  bool
 	FullOutput            bool
 	Guid                  string
 	AuthSrc               string
 	DecodeFulfillableData bool
-	RegisterURL           string
 	ClientName            string
 	RedirectURIs          []string
 }
@@ -54,7 +52,6 @@ type Config struct {
 // Access token information
 type TokenInfo struct {
 	AccessToken string
-	Expires     int //(response.ExpiresIn * time.Millisecond),
 	Valid       bool
 	Info        string
 }
@@ -65,6 +62,26 @@ type RefreshInfo struct {
 }
 
 func (i Config) resolveToken() (string, ims.TokenType, error) {
+	count := 0
+	if i.AccessToken != "" {
+		count++
+	}
+	if i.RefreshToken != "" {
+		count++
+	}
+	if i.DeviceToken != "" {
+		count++
+	}
+	if i.ServiceToken != "" {
+		count++
+	}
+	if i.AuthorizationCode != "" {
+		count++
+	}
+	if count > 1 {
+		return "", "", fmt.Errorf("multiple tokens provided, expected exactly one")
+	}
+
 	switch {
 	case i.AccessToken != "":
 		return i.AccessToken, ims.AccessToken, nil
@@ -79,6 +96,17 @@ func (i Config) resolveToken() (string, ims.TokenType, error) {
 	default:
 		return "", "", fmt.Errorf("no token provided")
 	}
+}
+
+func (i Config) newIMSClient() (*ims.Client, error) {
+	httpClient, err := i.httpClient()
+	if err != nil {
+		return nil, fmt.Errorf("error creating the HTTP client: %w", err)
+	}
+	return ims.NewClient(&ims.ClientConfig{
+		URL:    i.URL,
+		Client: httpClient,
+	})
 }
 
 func validateURL(u string) bool {

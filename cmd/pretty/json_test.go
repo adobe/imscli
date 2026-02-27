@@ -40,6 +40,9 @@ func TestJSON(t *testing.T) {
 		{name: "nested objects", input: `{"a":{"b":{"c":1}}}`, file: "nested_objects.json"},
 		{name: "non-JSON is returned as-is", input: "this is not JSON", file: "non_json.txt"},
 		{name: "empty string is returned as-is", input: "", file: "empty_string.txt"},
+		{name: "unicode characters", input: `{"greeting":"こんにちは","emoji":"🎉","accented":"café"}`, file: "unicode.json"},
+		{name: "special characters", input: `{"html":"\u003cscript\u003ealert('xss')\u003c/script\u003e","newlines":"line1\nline2","tabs":"col1\tcol2","quotes":"she said \"hello\""}`, file: "special_chars.json"},
+		{name: "null and bool values", input: `{"value":null,"enabled":true,"disabled":false}`, file: "null_and_bool.json"},
 	}
 
 	for _, tt := range tests {

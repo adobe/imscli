@@ -26,9 +26,8 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 			"returned IMS token. Public and private clients are supported.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
-			imsConfig.PKCE = true
-			resp, err := imsConfig.AuthorizeUser()
+
+			resp, err := imsConfig.AuthorizeUserPKCE()
 			if err != nil {
 				return fmt.Errorf("error in user authorization: %w", err)
 			}

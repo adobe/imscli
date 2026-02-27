@@ -26,7 +26,7 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Decode a JWT token and display the header and payload as prettified JSON.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			decoded, err := imsConfig.DecodeToken()
 			if err != nil {

@@ -24,7 +24,7 @@ func ServiceCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:  "Perform the 'Authorization Code Exchange' to negotiate an access token for a service.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.AuthorizeService()
 			if err != nil {
@@ -37,7 +37,7 @@ func ServiceCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
-	cmd.Flags().StringVarP(&imsConfig.AuthorizationCode, "authorizationCode", "a", "", "Permanent authorization code.")
+	cmd.Flags().StringVarP(&imsConfig.AuthorizationCode, "authorizationCode", "x", "", "Permanent authorization code.")
 
 	return cmd
 }

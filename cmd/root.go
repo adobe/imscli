@@ -27,7 +27,8 @@ func RootCmd(version string) *cobra.Command {
 		Use:     "imscli",
 		Short:   "imscli is a tool to interact with Adobe IMS",
 		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
-		Version: version,
+		Version:       version,
+		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if !verbose {
 				log.SetOutput(io.Discard)

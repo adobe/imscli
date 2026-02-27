@@ -19,7 +19,7 @@ import (
 
 // To be initialized with ldflags -X main.version
 // Done automatically by goreleaser
-var version string
+var version = "dev"
 
 func main() {
 	rootCmd := cmd.RootCmd(version)

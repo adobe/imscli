@@ -54,17 +54,9 @@ func (i Config) ValidateToken() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("invalid parameters for token validation: %w", err)
 	}
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return TokenInfo{}, fmt.Errorf("create client: %w", err)
+		return TokenInfo{}, fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	token, tokenType, err := i.resolveToken()

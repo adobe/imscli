@@ -22,7 +22,7 @@ func (i Config) validateGetOrganizationsConfig() error {
 	switch i.OrgsAPIVersion {
 	case "v1", "v2", "v3", "v4", "v5", "v6":
 	default:
-		return fmt.Errorf("invalid API version parameter, use something like v5")
+		return fmt.Errorf("invalid API version parameter, latest version is v6")
 	}
 
 	switch {
@@ -44,17 +44,9 @@ func (i Config) GetOrganizations() (string, error) {
 		return "", fmt.Errorf("invalid parameters for organizations: %w", err)
 	}
 
-	httpClient, err := i.httpClient()
+	c, err := i.newIMSClient()
 	if err != nil {
-		return "", fmt.Errorf("error creating the HTTP Client: %w", err)
-	}
-
-	c, err := ims.NewClient(&ims.ClientConfig{
-		URL:    i.URL,
-		Client: httpClient,
-	})
-	if err != nil {
-		return "", fmt.Errorf("error creating the client: %w", err)
+		return "", fmt.Errorf("error creating the IMS client: %w", err)
 	}
 
 	organizations, err := c.GetOrganizations(&ims.GetOrganizationsRequest{
