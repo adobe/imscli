@@ -97,7 +97,7 @@ imscli authz user --scopes AdobeID,openid,session
 
 Each parameter can be provided using the flag name and the IMS_ prefix.
 ```
-IMS_SCOPES="AdobeID,openid,session" imscli authorize user
+IMS_SCOPES="AdobeID,openid,session" imscli login user
 ```
 
 #### Configuration files
@@ -115,7 +115,4 @@ scopes:
   - AdobeID
   - openid
   - session
-
-user@host$ imscli authorize user
-```
 
