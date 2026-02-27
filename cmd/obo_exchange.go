@@ -19,22 +19,17 @@ import (
 
 func oboExchangeCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "obo",
-		Aliases: []string{"ob"},
-		Short:   "On-Behalf-Of token exchange: get a backend token for a user.",
-		Long: `Perform the On-Behalf-Of (OBO) token exchange: exchange a user access token for a new token
-suitable for backend-to-backend calls on behalf of that user.
-
-SECURITY: Do NOT send OBO access tokens to frontend clients. OBO tokens are intended only for
-backend-to-backend communication. They have a short TTL (e.g. 5 minutes) and the full actor
-chain is preserved in the act claim for audit.`,
+		Use:     "on-behalf-of",
+		Aliases: []string{"obo"},
+		Short:   "On-Behalf-Of token exchange.",
+		Long: `On-Behalf-Of token exchange: exchange a user access token for a new token. Do NOT send OBO access tokens to frontend clients.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
 			resp, err := imsConfig.OBOExchange()
 			if err != nil {
-				return fmt.Errorf("error during OBO exchange: %v", err)
+				return fmt.Errorf("error during On-Behalf-Of exchange: %v", err)
 			}
 			fmt.Println(resp.AccessToken)
 			return nil
@@ -43,11 +38,9 @@ chain is preserved in the act claim for audit.`,
 
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
-	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "User access token (subject token). Do not use service or impersonation tokens.")
+	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "User access token (subject token). Only access tokens are accepted.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
-		"Scopes to request. Must be within the client's configured scope boundary. Optional.")
-	cmd.Flags().StringVar(&imsConfig.OBOGrantType, "grantType", "",
-		"OAuth grant type for token exchange. If omitted, RFC 8693 token-exchange is used. Set if your IMS returns unsupported_grant_type (e.g. an IMS-specific value).")
+		"Scopes to request. Must be within the client's configured scope boundary.")
 
 	return cmd
 }

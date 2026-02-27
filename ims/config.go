@@ -45,8 +45,7 @@ type Config struct {
 	DecodeFulfillableData bool
 	RegisterURL           string
 	ClientName            string
-	RedirectURIs          []string
-	OBOGrantType          string // optional; if set, used for OBO token exchange (e.g. when IMS expects a specific grant type)
+	RedirectURIs []string
 }
 
 // Access token information
