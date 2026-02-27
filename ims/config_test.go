@@ -224,6 +224,7 @@ func TestValidateAuthorizeUserConfig(t *testing.T) {
 		ClientSecret: "s",
 		Organization: "org",
 		Scopes:       []string{"openid"},
+		Port:         8888,
 	}
 	tests := []struct {
 		name    string
@@ -239,6 +240,7 @@ func TestValidateAuthorizeUserConfig(t *testing.T) {
 		{name: "missing clientID", config: withField(validConfig, func(c *Config) { c.ClientID = "" }), wantErr: "missing client id"},
 		{name: "missing organization", config: withField(validConfig, func(c *Config) { c.Organization = "" }), wantErr: "missing organization"},
 		{name: "missing secret non-public", config: withField(validConfig, func(c *Config) { c.ClientSecret = "" }), wantErr: "missing client secret"},
+		{name: "missing port", config: withField(validConfig, func(c *Config) { c.Port = 0 }), wantErr: "missing or invalid port"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
