@@ -26,7 +26,7 @@ func AuthzCodeCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Validate an authorization code.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.ValidateToken()
 			if err != nil {

@@ -25,7 +25,7 @@ func RefreshTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Invalidate a refresh token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {

@@ -16,8 +16,27 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
+func (i Config) validateAuthorizeServiceConfig() error {
+	switch {
+	case i.URL == "":
+		return fmt.Errorf("missing IMS base URL parameter")
+	case i.ClientID == "":
+		return fmt.Errorf("missing client ID parameter")
+	case i.ClientSecret == "":
+		return fmt.Errorf("missing client secret parameter")
+	case i.AuthorizationCode == "":
+		return fmt.Errorf("missing authorization code parameter")
+	default:
+		return nil
+	}
+}
+
 // AuthorizeService : Login for the service to service IMS flow
 func (i Config) AuthorizeService() (string, error) {
+
+	if err := i.validateAuthorizeServiceConfig(); err != nil {
+		return "", fmt.Errorf("invalid parameters for service authorization: %w", err)
+	}
 
 	c, err := i.newIMSClient()
 	if err != nil {

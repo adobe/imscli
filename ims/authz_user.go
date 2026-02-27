@@ -103,16 +103,20 @@ func (i Config) AuthorizeUser() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to listen at port %d", port)
 	}
+	defer listener.Close()
 
 	log.Println("Local server successfully launched and contacted.")
 
 	localUrl := fmt.Sprintf("http://localhost:%d/", port)
 
-	// redirect stdout to avoid "Opening in existing browser session." message from chromium
-	// The token is expected in stdout and this type of messages disrupt scripts
+	// Suppress "Opening in existing browser session." messages from chromium-based
+	// browsers. The CLI token output goes to stdout, so stray browser messages
+	// would corrupt piped/scripted output. Save and restore to avoid permanent
+	// mutation of the package-level variable.
+	origStdout := browser.Stdout
 	browser.Stdout = nil
-
 	err = browser.OpenURL(localUrl)
+	browser.Stdout = origStdout
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error launching the browser, open it and visit %s\n", localUrl)
 	}

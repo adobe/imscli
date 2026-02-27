@@ -25,7 +25,7 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Perform the 'Client Credentials Authorization Flow' to negotiate an access token for a service.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.AuthorizeClientCredentials()
 			if err != nil {

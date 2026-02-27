@@ -25,7 +25,7 @@ func ServiceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Invalidate a service token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {

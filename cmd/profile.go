@@ -26,7 +26,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:  "Requests the user profile associated to the provided access token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.GetProfile()
 			if err != nil {

@@ -65,6 +65,26 @@ type RefreshInfo struct {
 }
 
 func (i Config) resolveToken() (string, ims.TokenType, error) {
+	count := 0
+	if i.AccessToken != "" {
+		count++
+	}
+	if i.RefreshToken != "" {
+		count++
+	}
+	if i.DeviceToken != "" {
+		count++
+	}
+	if i.ServiceToken != "" {
+		count++
+	}
+	if i.AuthorizationCode != "" {
+		count++
+	}
+	if count > 1 {
+		return "", "", fmt.Errorf("multiple tokens provided, expected exactly one")
+	}
+
 	switch {
 	case i.AccessToken != "":
 		return i.AccessToken, ims.AccessToken, nil

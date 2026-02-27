@@ -25,7 +25,7 @@ func DeviceTokenCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "invalidate a device token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			err := imsConfig.InvalidateToken()
 			if err != nil {

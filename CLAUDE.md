@@ -1,5 +1,12 @@
 # Code Review & Improvement Plan for imscli
 
+## Preferences
+
+- Do not include "Generated with Claude Code" or similar attribution lines in commits or PRs.
+- Always include file path and line numbers when referencing code (e.g., `ims/config.go:34`).
+
+---
+
 ## Summary
 
 Full review of all Go source files in the `imscli` project — a CLI tool for Adobe's
@@ -78,13 +85,6 @@ The private key is read into a `[]byte` and passed to `ExchangeJWT`, but the byt
 slice is never zeroed after use. Key material persists in memory until GC. Should
 add `defer func() { for i := range key { key[i] = 0 } }()`.
 
-#### 6.1.8 No mutual exclusion for token fields in validate/invalidate
-
-**Files:** `ims/validate.go:26-48`, `ims/invalidate.go:23-48`
-
-If multiple token fields are populated simultaneously, only the first match in the
-switch wins silently. No validation checks that exactly one token is provided.
-
 #### 6.1.12 PKCE flag mutation persists on shared Config pointer
 
 **File:** `cmd/authz/pkce.go:30`
@@ -98,24 +98,9 @@ switch wins silently. No validation checks that exactly one token is provided.
 Set in `jwt_exchange.go:65`, `exchange.go:73`, `refresh.go:67` with wrong calculations,
 but no caller ever reads the field. Dead code with active bugs.
 
-#### 6.2.3 Missing input validation in `AuthorizeService` and `AuthorizeClientCredentials`
-
-`ims/authz_service.go` and `ims/authz_client.go` are the only two operation methods
-without a `validateXxxConfig()` function.
-
-#### 6.2.5 `browser.Stdout = nil` has global side effects
-
-**File:** `ims/authz_user.go:123`
-
-Modifies a package-level variable in `pkg/browser`. Should save/restore the original.
-
 #### 6.2.6 Inconsistent flag shorthands across commands
 
 `-s` and `-a` mean different things in different commands.
-
-#### 6.2.8 `cmd/profile.go:41` — default API version outdated
-
-Profile API version defaults to `"v1"` but latest is `"v3"`.
 
 #### 6.2.9 Hardcoded serviceCode whitelist in profile decoding
 
@@ -139,18 +124,11 @@ Hardcoded `v1`-`v6` whitelist requires code changes for new versions.
 
 | Finding | File | Description |
 |---------|------|-------------|
-| No test for unicode/special chars | `cmd/pretty/json_test.go` | Missing edge case coverage |
 | `RawURLEncoding` rejects padded base64 | `ims/decode.go:53` | Some JWT impls include `=` padding |
-| No JWE support (5-part tokens) | `ims/decode.go:43` | Only 3-part JWTs supported |
-| Gzip `io.Copy(io.Discard)` unnecessary | `ims/profile.go:147` | JSON decoder already consumed stream |
 | `PersistentPreRunE` can be overridden | `cmd/root.go:31` | If a subcommand defines its own, parent's is lost |
 | Duplicate port defaults (cobra + const) | `cmd/authz/user.go:44` + `ims/authz_user.go:27` | Maintenance risk |
 | `cmd/refresh.go:36-39` uses `map[string]interface{}` | `cmd/refresh.go` | No guaranteed field order in JSON; use struct |
-| `viper.Unmarshal` ignores unknown keys | `cmd/params.go:69` | Config typos silently ignored |
-| Listener not closed on panic path | `ims/authz_user.go:112-130` | Missing `defer listener.Close()` |
 | Cascading/ClientSecret unconditionally sent | `ims/invalidate.go:91-97` | Should be conditional on token type |
-| `version` variable has no default | `main.go:22` | Shows empty if ldflags not set |
-| Double error printing from cobra | `main.go:27-29` | Root cmd doesn't SilenceErrors; leaf cmds do |
 
 ---
 
@@ -162,17 +140,13 @@ Hardcoded `v1`-`v6` whitelist requires code changes for new versions.
 |---|--------|-------|
 | 33 | Deduplicate validate subcommands with factory | `cmd/validate/*.go` |
 | 34 | Deduplicate invalidate subcommands with factory | `cmd/invalidate/*.go` |
-| 38 | Remove empty `internal/output/` directory | directory |
 | 40 | Merge `pkce.go`/`user.go` into factory | `cmd/authz/` |
-| 42 | Update default profile API version to v3 | `cmd/profile.go` |
 
 ### Testing
 
 | # | Change | Files |
 |---|--------|-------|
-| 43 | Add unit tests for all validators | `ims/*_test.go` (new) |
-| 44 | Add unicode/special char tests for pretty | `cmd/pretty/json_test.go` |
-| 46 | Add integration tests for flag/config/env precedence | `cmd/*_test.go` (new) |
+| 46 | Integration tests for flag/config/env precedence (requires mock IMS server) | `cmd/*_test.go` (new) |
 
 ---
 
@@ -216,6 +190,17 @@ The following items have been implemented and merged:
 - **2.1** Rename `ProfileApiVersion` → `ProfileAPIVersion`, `OrgsApiVersion` → `OrgsAPIVersion` (#70)
 - **2.5** Replace C-style `/* */` block comments with `//` line comments (#70)
 - **3.1** Extract `newIMSClient()` helper, deduplicate 13 call sites (#70)
+- **N17** Move `SilenceErrors` to root command, remove from 21 leaf commands (#70)
+- **6.2.3** Add input validation for `AuthorizeService` and `AuthorizeClientCredentials` (#70)
+- **6.2.5** Save/restore `browser.Stdout` around `OpenURL` call (#70)
+- **N16** Default `version` variable to `"dev"` for local builds (#70)
+- **N14** Add `defer listener.Close()` in OAuth flow (#70)
+- **43** Add unit tests for all validators (`ims/config_test.go`) (#70)
+- **44** Add unicode/special char tests for pretty (`cmd/pretty/json_test.go`) (#70)
+- **38** Remove empty `internal/output/` directory — already gone after #68 refactor
+- **45** Parallel test safety for `output/output_test.go` — resolved by #68 (output package removed, `cmd/pretty` tests a pure function)
+- **N15** Unicode/special char tests — completed as part of item 44 (#70)
+- **6.1.8** Reject multiple tokens in `resolveToken()` (`ims/config.go:67`) (#70)
 
 ### Skipped (not applicable)
 
@@ -224,3 +209,7 @@ The following items have been implemented and merged:
 - **6.1.10** Default metascopes — covered by 1.9
 - **3.8** `MarkFlagRequired` — incompatible with viper config/env workflow
 - **6.1.13** Missing Config `String()` — Config is never printed in the CLI
+- **N8** No JWE support — decode command is for plain JWTs, JWE is a different feature
+- **N9** Gzip `io.Copy(io.Discard)` — intentionally kept as an example pattern
+- **N13** `viper.Unmarshal` ignoring unknown keys — `UnmarshalExact` would break forward compatibility
+- **6.2.8 / 42** Default profile API version v1 — intentional for backward compatibility

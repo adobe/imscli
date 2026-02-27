@@ -26,7 +26,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:  `Register a new OAuth client using Dynamic Client Registration.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.Register()
 			if err != nil {

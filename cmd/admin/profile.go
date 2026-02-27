@@ -25,7 +25,7 @@ func ProfileCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:  "Requests the specified user profile using the admin API and a service token.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.GetAdminProfile()
 			if err != nil {

@@ -25,7 +25,7 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		Long:    "Perform the 'Cluster Access Token Exchange Grant' to request a new token with a new user ID or IMS Org ID.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
-			cmd.SilenceErrors = true
+
 
 			resp, err := imsConfig.ClusterExchange()
 			if err != nil {
