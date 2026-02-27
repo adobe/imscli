@@ -12,7 +12,6 @@ package ims
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/adobe/ims-go/ims"
 )
@@ -62,6 +61,5 @@ func (i Config) ClusterExchange() (TokenInfo, error) {
 
 	return TokenInfo{
 		AccessToken: r.AccessToken,
-		Expires:     int(r.ExpiresIn * time.Millisecond),
 	}, nil
 }
