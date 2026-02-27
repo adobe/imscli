@@ -42,7 +42,7 @@ func (i Config) validateGetAdminProfileConfig() error {
 	return nil
 }
 
-// GetAdminProfile requests the user profile using an access token.
+// GetAdminProfile requests the user profile using a service token.
 func (i Config) GetAdminProfile() (string, error) {
 
 	err := i.validateGetAdminProfileConfig()

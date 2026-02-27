@@ -41,7 +41,7 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("error marshalling full JSON response: %w", err)
 				}
-				fmt.Printf("%s", jsonData)
+				fmt.Printf("%s\n", jsonData)
 				return nil
 			}
 			fmt.Println(resp.AccessToken)

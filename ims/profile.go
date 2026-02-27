@@ -117,7 +117,7 @@ func findFulfillableData(data interface{}) {
 					}
 					decodedFulfillableData, err := modifyFulfillableData(strValue)
 					if err != nil {
-						fmt.Printf("Error decoding fulfillable_data: %v", err)
+						log.Printf("Error decoding fulfillable_data: %v", err)
 						return
 					}
 					data["fulfillable_data"] = decodedFulfillableData
