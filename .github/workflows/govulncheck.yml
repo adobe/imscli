@@ -8,9 +8,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Weekly scan catches new vulnerabilities even when the code hasn't changed.
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9:00 UTC
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   govulncheck:
@@ -27,3 +31,25 @@ jobs:
       - uses: golang/govulncheck-action@v1
         with:
           go-version-file: go.mod
+
+  # Open a GitHub issue when the scheduled scan finds vulnerabilities.
+  # Only runs on cron failures — PR and push failures are visible in the checks UI.
+  notify:
+    needs: govulncheck
+    runs-on: ubuntu-latest
+    if: failure() && github.event_name == 'schedule'
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'govulncheck: vulnerability detected',
+              body: [
+                'The weekly [govulncheck scan](' + context.serverUrl + '/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId + ') found vulnerabilities.',
+                '',
+                'Review the workflow run and update affected dependencies.'
+              ].join('\n'),
+              labels: ['security']
+            });
