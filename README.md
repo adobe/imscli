@@ -1,5 +1,6 @@
 # imscli
 ![CodeQL](https://github.com/adobe/imscli/workflows/CodeQL/badge.svg)
+[![govulncheck](https://github.com/adobe/imscli/actions/workflows/govulncheck.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/govulncheck.yml)
 [![CI](https://github.com/adobe/imscli/actions/workflows/ci.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adobe/imscli)](https://goreportcard.com/report/github.com/adobe/imscli)
 [![Release with GoReleaser](https://github.com/adobe/imscli/actions/workflows/main.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/main.yml)

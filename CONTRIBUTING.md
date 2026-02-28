@@ -50,6 +50,12 @@ Runs [GoReleaser](https://goreleaser.com) to build cross-platform binaries (linu
 
 Runs GitHub's CodeQL security analysis to detect vulnerabilities in the Go source code.
 
+### govulncheck (`govulncheck.yml`)
+
+**Triggers:** Every push to `main` and pull requests.
+
+Runs Go's official vulnerability scanner ([govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)) against all packages. The job fails if any known vulnerabilities in the Go vulnerability database affect the code. Unlike general-purpose scanners, govulncheck traces call graphs — it only reports vulnerabilities in functions your code actually calls.
+
 ## Repository Settings
 
 - **Squash merge only** — Merge commits and rebase merging are disabled. The PR title is used as the squash commit message, ensuring conventional commit messages land on `main`.

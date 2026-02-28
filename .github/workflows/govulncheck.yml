@@ -1,0 +1,29 @@
+# Runs Go's official vulnerability scanner against project dependencies.
+# Fails the job if any known vulnerabilities affect the code.
+# See https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck
+
+name: govulncheck
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  govulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      # golang/govulncheck-action runs govulncheck against all packages (./...).
+      # With the default text output format, the job fails if vulnerabilities are found.
+      - uses: golang/govulncheck-action@v1
+        with:
+          go-version-file: go.mod
