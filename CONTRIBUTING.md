@@ -80,3 +80,10 @@ Please tag new versions using [semantic versioning](https://semver.org/spec/v2.0
 ### PersistentPreRunE and subcommands
 
 The root command defines a `PersistentPreRunE` that loads configuration from flags, environment variables, and config files (see `cmd/root.go`). In cobra, if a subcommand defines its own `PersistentPreRunE`, it **overrides** the parent's — the root's `PersistentPreRunE` will not run for that subcommand or its children. If you need to add a `PersistentPreRunE` to a subcommand, you must explicitly call the parent's first.
+
+## Additional Reading
+
+The `docs/` directory contains write-ups on non-obvious problems encountered during development:
+
+- [OAuth Local Server: Unhandled Serve() Error](docs/oauth-serve-error.md) — Why the `Serve` goroutine error is captured via a buffered channel, and why the channel must be buffered.
+- [OAuth Local Server Shutdown Deadlock](docs/oauth-shutdown-deadlock.md) — How an unbuffered channel creates a deadlock between the HTTP handler and `Shutdown()`, and the two-part fix.
