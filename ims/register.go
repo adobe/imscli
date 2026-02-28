@@ -67,9 +67,13 @@ func (i Config) Register() (string, error) {
 	}
 	defer func() { _ = res.Body.Close() }()
 
-	body, err := io.ReadAll(res.Body)
+	body, err := io.ReadAll(io.LimitReader(res.Body, 1<<20)) // 1 MB max
 	if err != nil {
 		return "", fmt.Errorf("error reading response body: %w", err)
+	}
+
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		return "", fmt.Errorf("registration failed with status %d: %s", res.StatusCode, string(body))
 	}
 
 	return string(body), nil
