@@ -32,7 +32,7 @@ It is used for "Adobe I/O" integrations.
 
 #### imscli authorize pkce (Authorization Code Grant Flow with PKCE)
 
-Same as the user flow, but uses Proof Key for Code Exchange (PKCE). Supports public clients that cannot securely store a client secret.
+Like the user command, it uses the Authorization Code Grant Flow but with Proof Key for Code Exchange (PKCE). In IMS, PKCE is mandatory for public clients and recommended for private clients.
 
 #### imscli authorize client (Client Credentials Grant Flow)
 

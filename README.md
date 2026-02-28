@@ -40,7 +40,7 @@ imscli decode --token <jwt>
 | Command | Description |
 |---------|-------------|
 | `authorize user` | OAuth2 Authorization Code Grant Flow (launches browser) |
-| `authorize pkce` | Authorization Code Grant Flow with PKCE (public clients) |
+| `authorize pkce` | Authorization Code Grant Flow with PKCE (mandatory for public clients, optional for private) |
 | `authorize service` | Service authorization (client credentials + service token) |
 | `authorize jwt` | JWT Bearer Flow (signed JWT exchanged for access token) |
 | `authorize client` | Client Credentials Grant Flow |
