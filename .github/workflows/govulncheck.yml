@@ -24,13 +24,13 @@ jobs:
 
       - uses: actions/setup-go@v6
         with:
-          go-version: 'stable'
+          go-version-file: go.mod
 
       # golang/govulncheck-action runs govulncheck against all packages (./...).
       # With the default text output format, the job fails if vulnerabilities are found.
       - uses: golang/govulncheck-action@v1
         with:
-          go-version-input: 'stable'
+          go-version-file: go.mod
 
   # Open a GitHub issue when the scheduled scan finds vulnerabilities.
   # Only runs on cron failures — PR and push failures are visible in the checks UI.

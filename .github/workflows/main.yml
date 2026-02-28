@@ -21,11 +21,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Always use the latest stable Go release for the newest compiler and stdlib fixes.
+      # Go version is read from go.mod so it stays in sync with the project.
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: 'stable'
+          go-version-file: go.mod
 
       # GoReleaser builds, packages and publishes the release.
       # See .goreleaser.yml for build targets and packaging configuration.
