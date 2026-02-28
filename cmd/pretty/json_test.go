@@ -11,10 +11,12 @@
 package pretty
 
 import (
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func loadExpected(t *testing.T, filename string) string {
@@ -54,4 +56,57 @@ func TestJSON(t *testing.T) {
 			}
 		})
 	}
+}
+
+// randomString generates a string of the given length with arbitrary bytes,
+// including invalid UTF-8, control characters, and JSON-significant characters.
+// Used by the fuzz tests below to verify that JSON never panics.
+func randomString(rng *rand.Rand, length int) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = byte(rng.Intn(256))
+	}
+	return string(b)
+}
+
+// TestFuzzJSON generates random inputs for 10 seconds to verify that JSON
+// never panics regardless of input. Runs in parallel with other tests.
+//
+// For deeper exploration, use Go's built-in fuzz engine:
+//
+//	go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/pretty/
+func TestFuzzJSON(t *testing.T) {
+	t.Parallel()
+
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	deadline := time.After(10 * time.Second)
+	iterations := 0
+
+	for {
+		select {
+		case <-deadline:
+			t.Logf("fuzz: %d iterations without panic", iterations)
+			return
+		default:
+			input := randomString(rng, rng.Intn(1024))
+			_ = JSON(input)
+			iterations++
+		}
+	}
+}
+
+// FuzzJSON is a standard Go fuzz target for deeper exploration.
+// Run manually: go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/pretty/
+func FuzzJSON(f *testing.F) {
+	f.Add(`{}`)
+	f.Add(`[]`)
+	f.Add(`{"a":1}`)
+	f.Add(`"plain string"`)
+	f.Add(`null`)
+	f.Add(`not json`)
+	f.Add(``)
+
+	f.Fuzz(func(t *testing.T, input string) {
+		_ = JSON(input)
+	})
 }

@@ -11,7 +11,9 @@
 package ims
 
 import (
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestValidateDecodeTokenConfig(t *testing.T) {
@@ -392,4 +394,99 @@ func searchString(s, substr string) bool {
 		}
 	}
 	return false
+}
+
+// randomString generates a string of the given length with arbitrary bytes.
+func randomString(rng *rand.Rand, length int) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = byte(rng.Intn(256))
+	}
+	return string(b)
+}
+
+// TestFuzzValidateURL generates random inputs for 10 seconds to verify that
+// validateURL never panics regardless of input. Runs in parallel with other tests.
+//
+// For deeper exploration, use Go's built-in fuzz engine:
+//
+//	go test -fuzz=FuzzValidateURL -fuzztime=60s ./ims/
+func TestFuzzValidateURL(t *testing.T) {
+	t.Parallel()
+
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	deadline := time.After(10 * time.Second)
+	iterations := 0
+
+	for {
+		select {
+		case <-deadline:
+			t.Logf("fuzz: %d iterations without panic", iterations)
+			return
+		default:
+			input := randomString(rng, rng.Intn(512))
+			_ = validateURL(input)
+			iterations++
+		}
+	}
+}
+
+// FuzzValidateURL is a standard Go fuzz target for deeper exploration.
+// Run manually: go test -fuzz=FuzzValidateURL -fuzztime=60s ./ims/
+func FuzzValidateURL(f *testing.F) {
+	f.Add("https://example.com")
+	f.Add("http://localhost:8080")
+	f.Add("")
+	f.Add("not-a-url")
+	f.Add("://missing-scheme.com")
+	f.Add("https://")
+
+	f.Fuzz(func(t *testing.T, u string) {
+		_ = validateURL(u)
+	})
+}
+
+// TestFuzzDecodeToken generates random inputs for 10 seconds to verify that
+// DecodeToken never panics regardless of input. Runs in parallel with other tests.
+//
+// For deeper exploration, use Go's built-in fuzz engine:
+//
+//	go test -fuzz=FuzzDecodeToken -fuzztime=60s ./ims/
+func TestFuzzDecodeToken(t *testing.T) {
+	t.Parallel()
+
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+	deadline := time.After(10 * time.Second)
+	iterations := 0
+
+	for {
+		select {
+		case <-deadline:
+			t.Logf("fuzz: %d iterations without panic", iterations)
+			return
+		default:
+			// Generate random JWT-like strings (three dot-separated parts)
+			input := randomString(rng, rng.Intn(128)) + "." +
+				randomString(rng, rng.Intn(256)) + "." +
+				randomString(rng, rng.Intn(128))
+			c := Config{Token: input}
+			_, _ = c.DecodeToken()
+			iterations++
+		}
+	}
+}
+
+// FuzzDecodeToken is a standard Go fuzz target for deeper exploration.
+// Run manually: go test -fuzz=FuzzDecodeToken -fuzztime=60s ./ims/
+func FuzzDecodeToken(f *testing.F) {
+	f.Add("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature")
+	f.Add("a.b.c")
+	f.Add("...")
+	f.Add("")
+	f.Add("no-dots-at-all")
+
+	f.Fuzz(func(t *testing.T, token string) {
+		c := Config{Token: token}
+		_, _ = c.DecodeToken()
+	})
 }

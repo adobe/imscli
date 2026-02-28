@@ -34,6 +34,7 @@ func RootCmd(version string) *cobra.Command {
 				log.SetOutput(io.Discard)
 			}
 			// This call of the initParams will load all env vars, config file and flags.
+			imsConfig.Verbose = verbose
 			return initParams(cmd, imsConfig, configFile)
 		},
 	}
@@ -58,6 +59,7 @@ func RootCmd(version string) *cobra.Command {
 		refreshCmd(imsConfig),
 		adminCmd(imsConfig),
 		dcrCmd(imsConfig),
+		completionCmd(),
 	)
 	return cmd
 }

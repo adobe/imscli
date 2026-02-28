@@ -42,6 +42,7 @@ type Config struct {
 	Token                 string
 	Port                  int
 	FullOutput            bool
+	Verbose               bool
 	Guid                  string
 	AuthSrc               string
 	DecodeFulfillableData bool
