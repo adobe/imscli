@@ -16,7 +16,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/adobe/imscli/cmd/pretty"
+	"github.com/adobe/imscli/cmd/prettify"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -36,7 +36,7 @@ func decodeCmd(imsConfig *ims.Config) *cobra.Command {
 			}
 
 			output := fmt.Sprintf(`{"header":%s,"payload":%s}`, decoded.Header, decoded.Payload)
-			fmt.Println(pretty.JSON(output))
+			fmt.Println(prettify.JSON(output))
 
 			// When verbose, show human-readable token expiration on stderr
 			// so it doesn't pollute the JSON output on stdout.
