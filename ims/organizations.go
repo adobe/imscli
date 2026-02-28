@@ -30,6 +30,8 @@ func (i Config) validateGetOrganizationsConfig() error {
 		return fmt.Errorf("missing access token parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
 	default:
 		log.Println("all needed parameters verified not empty")
 	}

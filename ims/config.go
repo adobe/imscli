@@ -8,6 +8,10 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
+// Package ims implements the core business logic for interacting with the
+// Adobe Identity Management System (IMS) API. It provides functions for
+// authorization flows, token management, profile retrieval, and client
+// registration.
 package ims
 
 import (
@@ -17,6 +21,8 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
+// Config holds all parameters needed to interact with the IMS API.
+// Fields are populated from CLI flags, environment variables, or a config file.
 type Config struct {
 	URL                   string
 	ClientID              string
@@ -42,6 +48,7 @@ type Config struct {
 	Token                 string
 	Port                  int
 	FullOutput            bool
+	Verbose               bool
 	Guid                  string
 	AuthSrc               string
 	DecodeFulfillableData bool
@@ -49,13 +56,14 @@ type Config struct {
 	RedirectURIs          []string
 }
 
-// Access token information
+// TokenInfo holds the response data from token-related IMS API calls.
 type TokenInfo struct {
 	AccessToken string
 	Valid       bool
 	Info        string
 }
 
+// RefreshInfo extends TokenInfo with the new refresh token returned by a token refresh.
 type RefreshInfo struct {
 	TokenInfo
 	RefreshToken string

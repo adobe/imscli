@@ -20,6 +20,8 @@ func (i Config) validateClusterExchangeConfig() error {
 	switch {
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client ID parameter")
 	case i.ClientSecret == "":
