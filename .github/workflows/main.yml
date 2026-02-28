@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Go version is read from go.mod so it stays in sync with the project.
+      # Always use the latest stable Go release for the newest compiler and stdlib fixes.
       - name: Set up Go
         uses: actions/setup-go@v6
         with:

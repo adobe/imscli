@@ -20,11 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # Go version is read from go.mod so it stays in sync with the project.
+      # Always use the latest stable Go release for the newest compiler and stdlib fixes.
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
+          go-version: 'stable'
 
       # Verify dependency checksums match go.sum (detects corrupted or tampered modules).
       - name: Verify dependencies
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
+          go-version: 'stable'
 
       - name: Run go vet
         run: go vet ./...
@@ -72,7 +72,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: go.mod
+          go-version: 'stable'
 
       - name: Build
         run: go build -o /dev/null .
