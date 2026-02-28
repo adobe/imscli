@@ -18,13 +18,13 @@ import (
 	"time"
 )
 
-// Create a http client based on the received configuration.
+// httpClient creates an HTTP client based on the received configuration.
 func (i Config) httpClient() (*http.Client, error) {
 
 	if i.ProxyURL != "" {
 		p, err := url.Parse(i.ProxyURL)
 		if err != nil {
-			return nil, fmt.Errorf("proxy provided but its URL is malformed")
+			return nil, fmt.Errorf("proxy URL is malformed: %w", err)
 		}
 		t := http.DefaultTransport.(*http.Transport).Clone()
 		t.Proxy = http.ProxyURL(p)
