@@ -11,7 +11,9 @@
 package ims
 
 import (
+	"encoding/base64"
 	"math/rand"
+	"net/http"
 	"testing"
 	"time"
 )
@@ -394,6 +396,162 @@ func searchString(s, substr string) bool {
 		}
 	}
 	return false
+}
+
+func TestDecodeToken(t *testing.T) {
+	// Build a valid JWT with known header and payload.
+	header := base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"HS256"}`))
+	payload := base64.RawURLEncoding.EncodeToString([]byte(`{"sub":"1234567890"}`))
+	validJWT := header + "." + payload + ".signature"
+
+	tests := []struct {
+		name       string
+		token      string
+		wantHeader string
+		wantPayload string
+		wantErr    string
+	}{
+		{name: "valid JWT", token: validJWT, wantHeader: `{"alg":"HS256"}`, wantPayload: `{"sub":"1234567890"}`},
+		{name: "empty token", token: "", wantErr: "missing token parameter"},
+		{name: "no dots", token: "nodots", wantErr: "not composed by 3 parts"},
+		{name: "one dot", token: "a.b", wantErr: "not composed by 3 parts"},
+		{name: "four parts", token: "a.b.c.d", wantErr: "not composed by 3 parts"},
+		{name: "invalid base64 header", token: "!!!." + payload + ".sig", wantErr: "error decoding token header"},
+		{name: "invalid base64 payload", token: header + ".!!!.sig", wantErr: "error decoding token payload"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := Config{Token: tt.token}
+			result, err := c.DecodeToken()
+			assertError(t, err, tt.wantErr)
+			if err == nil {
+				if result.Header != tt.wantHeader {
+					t.Errorf("Header = %q, want %q", result.Header, tt.wantHeader)
+				}
+				if result.Payload != tt.wantPayload {
+					t.Errorf("Payload = %q, want %q", result.Payload, tt.wantPayload)
+				}
+			}
+		})
+	}
+}
+
+func TestHttpClient(t *testing.T) {
+	tests := []struct {
+		name           string
+		config         Config
+		wantErr        string
+		wantProxy      bool
+		wantInsecure   bool
+	}{
+		{
+			name:   "default client",
+			config: Config{Timeout: 30},
+		},
+		{
+			name:      "with proxy",
+			config:    Config{Timeout: 30, ProxyURL: "http://proxy.example.com:8080"},
+			wantProxy: true,
+		},
+		{
+			name:         "with proxy and ignore TLS",
+			config:       Config{Timeout: 30, ProxyURL: "http://proxy.example.com:8080", ProxyIgnoreTLS: true},
+			wantProxy:    true,
+			wantInsecure: true,
+		},
+		{
+			name:    "malformed proxy URL",
+			config:  Config{ProxyURL: "://bad"},
+			wantErr: "malformed",
+		},
+		{
+			name:   "timeout is respected",
+			config: Config{Timeout: 60},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client, err := tt.config.httpClient()
+			assertError(t, err, tt.wantErr)
+			if err != nil {
+				return
+			}
+			expectedTimeout := time.Duration(tt.config.Timeout) * time.Second
+			if client.Timeout != expectedTimeout {
+				t.Errorf("Timeout = %v, want %v", client.Timeout, expectedTimeout)
+			}
+			if tt.wantProxy {
+				transport, ok := client.Transport.(*http.Transport)
+				if !ok || transport.Proxy == nil {
+					t.Error("expected proxy to be configured")
+				}
+				if tt.wantInsecure {
+					if transport.TLSClientConfig == nil || !transport.TLSClientConfig.InsecureSkipVerify {
+						t.Error("expected InsecureSkipVerify to be true")
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestNewIMSClient(t *testing.T) {
+	tests := []struct {
+		name    string
+		config  Config
+		wantErr string
+	}{
+		{name: "valid config", config: Config{URL: "https://ims.example.com", Timeout: 30}},
+		{name: "malformed proxy", config: Config{URL: "https://ims.example.com", ProxyURL: "://bad"}, wantErr: "malformed"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := tt.config.newIMSClient()
+			assertError(t, err, tt.wantErr)
+		})
+	}
+}
+
+func TestDecodeProfile(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		wantErr string
+	}{
+		{name: "simple profile", input: `{"name":"John","email":"john@example.com"}`},
+		{name: "profile with unrelated fulfillable_data", input: `{"serviceCode":"other","fulfillable_data":"test"}`},
+		{name: "invalid JSON", input: `not json`, wantErr: "error parsing profile JSON"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := decodeProfile([]byte(tt.input))
+			assertError(t, err, tt.wantErr)
+		})
+	}
+}
+
+func TestFindFulfillableData(t *testing.T) {
+	// Verify that findFulfillableData doesn't panic on various data structures.
+	tests := []struct {
+		name  string
+		input interface{}
+	}{
+		{name: "nil", input: nil},
+		{name: "string", input: "hello"},
+		{name: "number", input: 42.0},
+		{name: "empty map", input: map[string]interface{}{}},
+		{name: "empty slice", input: []interface{}{}},
+		{name: "nested map", input: map[string]interface{}{"a": map[string]interface{}{"b": 1}}},
+		{name: "fulfillable_data with wrong serviceCode", input: map[string]interface{}{"serviceCode": "unknown", "fulfillable_data": "test"}},
+		{name: "fulfillable_data non-string value", input: map[string]interface{}{"serviceCode": "dma_media_library", "fulfillable_data": 123}},
+		{name: "nested array", input: []interface{}{map[string]interface{}{"key": "value"}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Should not panic.
+			findFulfillableData(tt.input)
+		})
+	}
 }
 
 // randomString generates a string of the given length with arbitrary bytes.
