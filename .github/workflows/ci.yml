@@ -1,0 +1,78 @@
+name: CI
+
+# Run on every push and on pull requests targeting main.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+# Read-only access is sufficient for running tests and linting.
+permissions:
+  contents: read
+
+jobs:
+  # Run the full test suite with race detection and generate a coverage report.
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # Go version is read from go.mod so it stays in sync with the project.
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Run tests
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      # Upload the coverage report to Codecov. Non-blocking so CI still
+      # passes if Codecov is temporarily unavailable.
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.out
+          fail_ci_if_error: false
+
+  # Static analysis: go vet for built-in checks, golangci-lint for extended linting.
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Run go vet
+        run: go vet ./...
+
+      # golangci-lint v2 runs 50+ linters in a single pass.
+      # Without a .golangci.yml config file it uses sensible defaults.
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.10.1
+
+  # Verify the project compiles. Cross-platform builds are handled by
+  # GoReleaser at release time, so a single-platform check suffices here.
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Build
+        run: go build -o /dev/null .
