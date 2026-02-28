@@ -20,6 +20,8 @@ func (i Config) validateAuthorizeServiceConfig() error {
 	switch {
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client ID parameter")
 	case i.ClientSecret == "":
@@ -31,7 +33,7 @@ func (i Config) validateAuthorizeServiceConfig() error {
 	}
 }
 
-// AuthorizeService : Login for the service to service IMS flow
+// AuthorizeService performs the service-to-service IMS authorization flow.
 func (i Config) AuthorizeService() (string, error) {
 
 	if err := i.validateAuthorizeServiceConfig(); err != nil {
@@ -49,7 +51,7 @@ func (i Config) AuthorizeService() (string, error) {
 		Code:         i.AuthorizationCode,
 	})
 	if err != nil {
-		return "", fmt.Errorf("request token: %w", err)
+		return "", fmt.Errorf("error requesting token: %w", err)
 	}
 
 	return r.AccessToken, nil
