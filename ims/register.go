@@ -59,7 +59,7 @@ func (i Config) Register() (RegisterResponse, error) {
 	if err != nil {
 		return RegisterResponse{}, fmt.Errorf("error making registration request: %v", err)
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {

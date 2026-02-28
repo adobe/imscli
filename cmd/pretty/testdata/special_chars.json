@@ -1,0 +1,6 @@
+{
+  "html": "\u003cscript\u003ealert('xss')\u003c/script\u003e",
+  "newlines": "line1\nline2",
+  "tabs": "col1\tcol2",
+  "quotes": "she said \"hello\""
+}

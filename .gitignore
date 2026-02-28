@@ -61,6 +61,10 @@ Temporary Items
 *.yaml
 *.yml
 
+# Allow test golden files and GitHub config
+!**/testdata/**
+!.github/**
+
 dist/
 /imscli
 go.mod.local
