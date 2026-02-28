@@ -3,7 +3,6 @@
 [![CI](https://github.com/adobe/imscli/actions/workflows/ci.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adobe/imscli)](https://goreportcard.com/report/github.com/adobe/imscli)
 [![Release with GoReleaser](https://github.com/adobe/imscli/actions/workflows/main.yml/badge.svg)](https://github.com/adobe/imscli/actions/workflows/main.yml)
-[![codecov](https://codecov.io/gh/adobe/imscli/branch/main/graph/badge.svg)](https://codecov.io/gh/adobe/imscli)
 ![Go Version](https://img.shields.io/github/go-mod/go-version/adobe/imscli)
 [![Go Reference](https://pkg.go.dev/badge/github.com/adobe/imscli.svg)](https://pkg.go.dev/github.com/adobe/imscli)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)

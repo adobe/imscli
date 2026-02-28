@@ -29,13 +29,9 @@ jobs:
       - name: Run tests
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
-      # Upload the coverage report to Codecov. Non-blocking so CI still
-      # passes if Codecov is temporarily unavailable.
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          files: coverage.out
-          fail_ci_if_error: false
+      # Print coverage summary to the CI log.
+      - name: Coverage summary
+        run: go tool cover -func=coverage.out | tail -1
 
   # Static analysis: go vet for built-in checks, golangci-lint for extended linting.
   lint:
