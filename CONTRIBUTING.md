@@ -61,6 +61,7 @@ Runs Go's official vulnerability scanner ([govulncheck](https://pkg.go.dev/golan
 - **Squash merge only** — Merge commits and rebase merging are disabled. The PR title is used as the squash commit message, ensuring conventional commit messages land on `main`.
 - **Auto-delete branches** — Head branches are automatically deleted after a PR is merged.
 - **Renovate auto-merge** — [Renovate](https://docs.renovatebot.com/) monitors `go.mod` for dependency updates and opens PRs automatically. Patch updates (e.g., `v1.8.0` → `v1.8.1`) are auto-merged after CI passes. Minor and major updates require manual review. Configuration lives in `renovate.json`.
+- **Go version pinning** — All CI workflows use `go-version-file: go.mod` so the Go compiler version is controlled by the `toolchain` directive in `go.mod`. To upgrade Go, update `go.mod` (Renovate opens PRs for this automatically). To downgrade after a bad release, revert the `toolchain` line in `go.mod` — all workflows pick up the change immediately.
 
 ## Release Process
 
