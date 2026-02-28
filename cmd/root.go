@@ -8,6 +8,9 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
+// Package cmd defines the Cobra command tree for the imscli CLI.
+// Each subcommand is a function returning *cobra.Command that binds flags
+// to the shared ims.Config struct.
 package cmd
 
 import (
