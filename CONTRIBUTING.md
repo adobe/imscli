@@ -28,9 +28,9 @@ All pipelines are defined in `.github/workflows/`.
 
 Runs three parallel jobs:
 
-- **Test** — Runs `go test -race` with coverage and uploads the report to Codecov.
+- **Test** — Runs `go test -race` with coverage and prints a coverage summary to the log. Verifies dependency checksums with `go mod verify`.
 - **Lint** — Runs `go vet` and [golangci-lint](https://golangci-lint.run/) for extended static analysis.
-- **Build** — Verifies the project compiles. Cross-platform builds are handled by GoReleaser at release time, so a single-platform check suffices here.
+- **Build** — Verifies the project compiles and validates `.goreleaser.yml` with `goreleaser check`. Cross-platform builds are handled by GoReleaser at release time, so a single-platform check suffices here.
 
 ### PR Title (`pr-title.yml`)
 
@@ -52,9 +52,9 @@ Runs GitHub's CodeQL security analysis to detect vulnerabilities in the Go sourc
 
 ### govulncheck (`govulncheck.yml`)
 
-**Triggers:** Every push to `main` and pull requests.
+**Triggers:** Every push to `main`, pull requests, and weekly on Monday at 9:00 UTC.
 
-Runs Go's official vulnerability scanner ([govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)) against all packages. The job fails if any known vulnerabilities in the Go vulnerability database affect the code. Unlike general-purpose scanners, govulncheck traces call graphs — it only reports vulnerabilities in functions your code actually calls.
+Runs Go's official vulnerability scanner ([govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)) against all packages. The job fails if any known vulnerabilities in the Go vulnerability database affect the code. Unlike general-purpose scanners, govulncheck traces call graphs — it only reports vulnerabilities in functions your code actually calls. The weekly schedule catches new vulnerabilities even when the code hasn't changed. If the scheduled scan fails, a GitHub issue labeled `security` is created automatically.
 
 ## Repository Settings
 

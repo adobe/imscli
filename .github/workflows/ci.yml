@@ -26,6 +26,10 @@ jobs:
         with:
           go-version-file: go.mod
 
+      # Verify dependency checksums match go.sum (detects corrupted or tampered modules).
+      - name: Verify dependencies
+        run: go mod verify
+
       - name: Run tests
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
@@ -72,3 +76,9 @@ jobs:
 
       - name: Build
         run: go build -o /dev/null .
+
+      # Validate .goreleaser.yml so config errors are caught before tagging a release.
+      - name: Verify GoReleaser config
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          args: check
