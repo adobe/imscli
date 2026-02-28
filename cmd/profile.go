@@ -13,7 +13,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/adobe/imscli/cmd/pretty"
+	"github.com/adobe/imscli/cmd/prettify"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -32,7 +32,7 @@ func profileCmd(imsConfig *ims.Config) *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("error in get profile cmd: %w", err)
 			}
-			fmt.Println(pretty.JSON(resp))
+			fmt.Println(prettify.JSON(resp))
 			return nil
 		},
 	}

@@ -8,7 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
-package pretty
+package prettify
 
 import (
 	"math/rand"
@@ -74,7 +74,7 @@ func randomString(rng *rand.Rand, length int) string {
 //
 // For deeper exploration, use Go's built-in fuzz engine:
 //
-//	go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/pretty/
+//	go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/prettify/
 func TestFuzzJSON(t *testing.T) {
 	t.Parallel()
 
@@ -96,7 +96,7 @@ func TestFuzzJSON(t *testing.T) {
 }
 
 // FuzzJSON is a standard Go fuzz target for deeper exploration.
-// Run manually: go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/pretty/
+// Run manually: go test -fuzz=FuzzJSON -fuzztime=60s ./cmd/prettify/
 func FuzzJSON(f *testing.F) {
 	f.Add(`{}`)
 	f.Add(`[]`)

@@ -14,7 +14,7 @@ package validate
 import (
 	"fmt"
 
-	"github.com/adobe/imscli/cmd/pretty"
+	"github.com/adobe/imscli/cmd/prettify"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func tokenCmd(imsConfig *ims.Config, def tokenDef) *cobra.Command {
 			if !resp.Valid {
 				return fmt.Errorf("invalid token: %v", resp.Info)
 			}
-			fmt.Println(pretty.JSON(resp.Info))
+			fmt.Println(prettify.JSON(resp.Info))
 			return nil
 		},
 	}
