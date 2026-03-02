@@ -20,6 +20,8 @@ func (i Config) validateAuthorizeClientCredentialsConfig() error {
 	switch {
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
 	case i.ClientID == "":
 		return fmt.Errorf("missing client ID parameter")
 	case i.ClientSecret == "":
@@ -31,7 +33,7 @@ func (i Config) validateAuthorizeClientCredentialsConfig() error {
 	}
 }
 
-// AuthorizeClientCredentials : Client Credentials OAuth flow
+// AuthorizeClientCredentials performs the Client Credentials OAuth flow.
 func (i Config) AuthorizeClientCredentials() (string, error) {
 
 	if err := i.validateAuthorizeClientCredentialsConfig(); err != nil {
@@ -50,7 +52,7 @@ func (i Config) AuthorizeClientCredentials() (string, error) {
 		GrantType:    "client_credentials",
 	})
 	if err != nil {
-		return "", fmt.Errorf("request token: %w", err)
+		return "", fmt.Errorf("error requesting token: %w", err)
 	}
 
 	return r.AccessToken, nil

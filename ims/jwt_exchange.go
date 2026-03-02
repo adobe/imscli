@@ -19,7 +19,36 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
+// jwtExpiration is the lifetime of JWT assertions used for the exchange flow.
+const jwtExpiration = 30 * time.Minute
+
+func (i Config) validateAuthorizeJWTExchangeConfig() error {
+	switch {
+	case i.URL == "":
+		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
+	case i.ClientID == "":
+		return fmt.Errorf("missing client ID parameter")
+	case i.ClientSecret == "":
+		return fmt.Errorf("missing client secret parameter")
+	case i.PrivateKeyPath == "":
+		return fmt.Errorf("missing private key path parameter")
+	case i.Organization == "":
+		return fmt.Errorf("missing organization parameter")
+	case i.Account == "":
+		return fmt.Errorf("missing account parameter")
+	default:
+		return nil
+	}
+}
+
+// AuthorizeJWTExchange performs the JWT Bearer exchange flow.
 func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
+
+	if err := i.validateAuthorizeJWTExchangeConfig(); err != nil {
+		return TokenInfo{}, fmt.Errorf("invalid parameters for JWT exchange: %w", err)
+	}
 
 	c, err := i.newIMSClient()
 	if err != nil {
@@ -28,7 +57,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	key, err := os.ReadFile(i.PrivateKeyPath)
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("error read private key file: %s, %w", i.PrivateKeyPath, err)
+		return TokenInfo{}, fmt.Errorf("error reading private key file %s: %w", i.PrivateKeyPath, err)
 	}
 	defer func() {
 		for i := range key {
@@ -48,7 +77,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 
 	r, err := c.ExchangeJWT(&ims.ExchangeJWTRequest{
 		PrivateKey:   key,
-		Expiration:   time.Now().Add(time.Minute * 30),
+		Expiration:   time.Now().Add(jwtExpiration),
 		Issuer:       i.Organization,
 		Subject:      i.Account,
 		ClientID:     i.ClientID,
@@ -56,7 +85,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		Claims:       claims,
 	})
 	if err != nil {
-		return TokenInfo{}, fmt.Errorf("exchange JWT: %w", err)
+		return TokenInfo{}, fmt.Errorf("error exchanging JWT: %w", err)
 	}
 
 	return TokenInfo{

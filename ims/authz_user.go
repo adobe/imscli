@@ -24,11 +24,19 @@ import (
 	"github.com/pkg/browser"
 )
 
-// Validate that:
-//   - the ims.Config struct has the necessary parameters for AuthorizeUser
-//   - the provided environment exists
-func (i Config) validateAuthorizeUserConfig() error {
+const (
+	// authTimeout is how long the CLI waits for the user to complete the browser-based
+	// OAuth flow before giving up.
+	authTimeout = 5 * time.Minute
 
+	// shutdownTimeout is the grace period for the local HTTP server to finish
+	// serving in-flight requests during shutdown.
+	shutdownTimeout = 10 * time.Second
+)
+
+// validateAuthorizeUserConfig checks that the configuration has valid
+// parameters for user authorization.
+func (i Config) validateAuthorizeUserConfig() error {
 	switch {
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
@@ -143,7 +151,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		log.Println("The IMS HTTP handler returned a message.")
 	case serr = <-serveCh:
 		log.Println("The local server stopped unexpectedly.")
-	case <-time.After(time.Minute * 5):
+	case <-time.After(authTimeout):
 		fmt.Fprintf(os.Stderr, "Timeout reached waiting for the user to finish the authentication ...\n")
 		serr = fmt.Errorf("user timed out")
 	}
@@ -160,7 +168,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		}
 	}()
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
 	if err = server.Shutdown(shutdownCtx); err != nil {

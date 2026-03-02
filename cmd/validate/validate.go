@@ -8,6 +8,7 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
+// Package validate implements the validate subcommands for token validation.
 package validate
 
 import (

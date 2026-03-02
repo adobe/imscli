@@ -30,6 +30,7 @@ func (i Config) validateDecodeTokenConfig() error {
 	return nil
 }
 
+// DecodeToken decodes a JWT token into its header and payload parts.
 func (i Config) DecodeToken() (*DecodedToken, error) {
 	err := i.validateDecodeTokenConfig()
 	if err != nil {

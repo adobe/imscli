@@ -8,6 +8,9 @@
 // OF ANY KIND, either express or implied. See the License for the specific language
 // governing permissions and limitations under the License.
 
+// Package cmd defines the Cobra command tree for the imscli CLI.
+// Each subcommand is a function returning *cobra.Command that binds flags
+// to the shared ims.Config struct.
 package cmd
 
 import (
@@ -34,6 +37,7 @@ func RootCmd(version string) *cobra.Command {
 				log.SetOutput(io.Discard)
 			}
 			// This call of the initParams will load all env vars, config file and flags.
+			imsConfig.Verbose = verbose
 			return initParams(cmd, imsConfig, configFile)
 		},
 	}
@@ -58,6 +62,7 @@ func RootCmd(version string) *cobra.Command {
 		refreshCmd(imsConfig),
 		adminCmd(imsConfig),
 		dcrCmd(imsConfig),
+		completionCmd(),
 	)
 	return cmd
 }

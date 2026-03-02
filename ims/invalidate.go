@@ -17,7 +17,7 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-// Invalidate a token.
+// validateInvalidateTokenConfig checks that the configuration has valid parameters for token invalidation.
 func (i Config) validateInvalidateTokenConfig() error {
 
 	switch {
@@ -25,6 +25,8 @@ func (i Config) validateInvalidateTokenConfig() error {
 		return fmt.Errorf("missing clientID parameter")
 	case i.URL == "":
 		return fmt.Errorf("missing IMS base URL parameter")
+	case !validateURL(i.URL):
+		return fmt.Errorf("invalid IMS base URL parameter")
 	case i.AccessToken != "":
 		log.Println("access token will be invalidated")
 		return nil
@@ -45,7 +47,7 @@ func (i Config) validateInvalidateTokenConfig() error {
 	}
 }
 
-// InvalidateToken Invalidates the token provided in the configuration using the IMS API.
+// InvalidateToken invalidates the token provided in the configuration using the IMS API.
 func (i Config) InvalidateToken() error {
 	// Perform parameter validation
 	err := i.validateInvalidateTokenConfig()
@@ -60,7 +62,7 @@ func (i Config) InvalidateToken() error {
 
 	token, tokenType, err := i.resolveToken()
 	if err != nil {
-		return fmt.Errorf("unexpected error, broken parameter validation")
+		return fmt.Errorf("unexpected error resolving token: %w", err)
 	}
 
 	err = c.InvalidateToken(&ims.InvalidateTokenRequest{
