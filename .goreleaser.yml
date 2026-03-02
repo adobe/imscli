@@ -22,12 +22,24 @@ checksum:
   name_template: 'checksums.txt'
 snapshot:
   version_template: "{{ .Version }}-next"
+# Group commits by conventional-commit prefix for cleaner release notes.
 changelog:
   sort: asc
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([^)]+\))?!?:.+$'
+      order: 0
+    - title: Bug Fixes
+      regexp: '^.*?fix(\([^)]+\))?!?:.+$'
+      order: 1
+    - title: Other
+      order: 999
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+      - '^ci:'
+      - '^chore:'
 nfpms:
   - file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
     homepage:  "https://github.com/adobe/imscli"

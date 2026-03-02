@@ -12,31 +12,31 @@ The command will return 0 in case of success or 1 in case of an error.
 ## Subcommands
 ### Authorize
 
-imscli login will negotiate an ***access token*** with IMS following the specified ***flow***.
+imscli authorize will negotiate an ***access token*** with IMS following the specified ***flow***.
 
 #### imscli authorize user (standard Authorization Code Grant Flow)
 
-This command will launch a browser and execute the normal OAuth2 flow done by users when log into IMS to use a service.
+This command will launch a browser and execute the normal OAuth2 flow done by users when logging into IMS to use a service.
 
-#### imscli authz service (an IMS specific flow similar to the Client Credentials Grant Flow).
+#### imscli authorize service (an IMS specific flow similar to the Client Credentials Grant Flow).
 
 The imscli client will exchange client credentials and an additional service token to obtain the access token.
 
 It is used to access an "Application", an Adobe API exposed through Adobe I/O Gateway.
 
-#### imscli authz jwt (JWT Bearer Flow).
+#### imscli authorize jwt (JWT Bearer Flow).
 
-This command will build a JWT will all specified claims, sign it with a private key and exchange it for an access token.
+This command will build a JWT with all specified claims, sign it with a private key and exchange it for an access token.
 
 It is used for "Adobe I/O" integrations.
 
-### Completion
+#### imscli authorize pkce (Authorization Code Grant Flow with PKCE)
 
-Generate a script to enable autocompletion for imscli. 
+Like the user command, it uses the Authorization Code Grant Flow but with Proof Key for Code Exchange (PKCE). In IMS, PKCE is mandatory for public clients and recommended for private clients.
 
-To configure bash, add the following line to your .bashrc (or alternative config file):
+#### imscli authorize client (Client Credentials Grant Flow)
 
-    eval "$(imscli autocompletion bash)"
+Exchanges client credentials (client ID + secret) and scopes directly for an access token, without user interaction.
 
 ### Profile
 
@@ -59,6 +59,24 @@ Validates a token using the IMS API.
 
 Invalidates a token using the IMS API.
 
+### Decode
+
+Decodes a JWT token locally, printing the header and payload without contacting IMS.
+
+### Refresh
+
+Refreshes an access token using a refresh token.
+
+### Admin
+
+Administrative operations using a service token:
+
+- **admin profile**: Retrieve a user profile using a service token, client ID, guid and auth source.
+- **admin organizations**: Retrieve organizations for a user using a service token.
+
+### DCR (Dynamic Client Registration)
+
+Register a new OAuth client using Dynamic Client Registration.
 
 ## Configuration
 
@@ -77,9 +95,9 @@ imscli authz user --scopes AdobeID,openid,session
 
 #### Environment variables
 
-Each parameter can be provided using the flag name and the IMS_ suffix.
+Each parameter can be provided using the flag name and the IMS_ prefix.
 ```
-IMS_SCOPES="AdobeID,openid,session" imscli login user
+IMS_SCOPES="AdobeID,openid,session" imscli authorize user
 ```
 
 #### Configuration files
@@ -98,6 +116,6 @@ scopes:
   - openid
   - session
 
-user@host$ imscli login user
+user@host$ imscli authorize user
 ```
 

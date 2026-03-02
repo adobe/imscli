@@ -85,13 +85,13 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		UsePKCE:      pkce,
 		RedirectURI:  fmt.Sprintf("http://localhost:%d", i.Port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, `
+			_, _ = fmt.Fprintln(w, `
 				<h1>An error occurred</h1>
 				<p>Please look at the terminal output for further details.</p>
 			`)
 		}),
 		OnSuccess: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, `
+			_, _ = fmt.Fprintln(w, `
 				<h1>Login successful!</h1>
 				<p>You can close this tab.</p>
 			`)
@@ -105,7 +105,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to listen at port %d", i.Port)
 	}
-	defer listener.Close()
+	defer func() { _ = listener.Close() }()
 
 	log.Println("Local server successfully launched and contacted.")
 

@@ -1,0 +1,41 @@
+# Ensure PR titles follow the Conventional Commits format so that
+# squash-merged commits produce a clean changelog via GoReleaser.
+# See: https://www.conventionalcommits.org
+name: PR Title
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    steps:
+      # Validates that the PR title matches the conventional commit format.
+      # Examples of valid titles:
+      #   feat: add token refresh command
+      #   fix(auth): handle expired tokens
+      #   docs: update CONTRIBUTING.md
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Types allowed in PR titles. These map to GoReleaser changelog groups.
+          types: |
+            feat
+            fix
+            docs
+            chore
+            ci
+            test
+            refactor
+            perf
+            style
+            build
+            revert
+          # Require a scope in parentheses (optional — set to true to enforce).
+          requireScope: false
