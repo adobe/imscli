@@ -78,7 +78,7 @@ func (i Config) GetProfile() (string, error) {
 
 func decodeProfile(profile []byte) (string, error) {
 	// Parse the profile JSON
-	var p map[string]interface{}
+	var p map[string]any
 	err := json.Unmarshal(profile, &p)
 	if err != nil {
 		return "", fmt.Errorf("error parsing profile JSON: %w", err)
@@ -102,9 +102,9 @@ var fulfillableServiceCodes = map[string]bool{
 	"dx_genstudio":       true,
 }
 
-func findFulfillableData(data interface{}) {
+func findFulfillableData(data any) {
 	switch data := data.(type) {
-	case map[string]interface{}:
+	case map[string]any:
 		for key, value := range data {
 			if key == "fulfillable_data" {
 				serviceCode, ok := data["serviceCode"].(string)
@@ -126,7 +126,7 @@ func findFulfillableData(data interface{}) {
 				findFulfillableData(value)
 			}
 		}
-	case []interface{}:
+	case []any:
 		for _, item := range data {
 			findFulfillableData(item)
 		}

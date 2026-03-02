@@ -40,7 +40,7 @@ func (i Config) Register() (string, error) {
 	}
 
 	// Build the request payload using json.Marshal for proper escaping.
-	payload, err := json.Marshal(map[string]interface{}{
+	payload, err := json.Marshal(map[string]any{
 		"client_name":   i.ClientName,
 		"redirect_uris": i.RedirectURIs,
 	})

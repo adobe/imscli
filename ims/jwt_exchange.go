@@ -65,12 +65,12 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		}
 	}()
 
-	// 	Metascopes are passed as generic claims with the format map[string]interface{}
+	// 	Metascopes are passed as generic claims with the format map[string]any
 	//  where the strings are in the form: baseIMSUrl/s/metascope
-	//  and the interface{} is 'true'
+	//  and the value is 'true'
 
 	baseURL := strings.TrimRight(i.URL, "/")
-	claims := make(map[string]interface{})
+	claims := make(map[string]any)
 	for _, metascope := range i.Metascopes {
 		claims[fmt.Sprintf("%s/s/%s", baseURL, metascope)] = true
 	}
