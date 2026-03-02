@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 // - Subject token restrictions: only user access tokens are accepted; ServiceTokens and
@@ -101,10 +100,7 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 		return TokenInfo{}, fmt.Errorf("error decoding On-Behalf-Of response: %v", err)
 	}
 
-	expiresMs := out.ExpiresIn * int(time.Second/time.Millisecond)
-
 	return TokenInfo{
 		AccessToken: out.AccessToken,
-		Expires:     expiresMs,
 	}, nil
 }
