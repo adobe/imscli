@@ -13,7 +13,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/adobe/imscli/cmd/pretty"
+	"github.com/adobe/imscli/cmd/prettify"
 	"github.com/adobe/imscli/ims"
 	"github.com/spf13/cobra"
 )
@@ -44,7 +44,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 			return fmt.Errorf("error during client registration: %w", err)
 			}
 
-			fmt.Println(pretty.JSON(resp))
+			fmt.Println(prettify.JSON(resp))
 			return nil
 		},
 	}
