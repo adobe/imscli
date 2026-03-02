@@ -60,6 +60,7 @@ func (i Config) Register() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error creating the HTTP client: %w", err)
 	}
+	defer func() { _ = res.Body.Close() }()
 
 	res, err := httpClient.Do(req)
 	if err != nil {
