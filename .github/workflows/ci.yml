@@ -59,7 +59,7 @@ jobs:
       # golangci-lint v2 runs 50+ linters in a single pass.
       # Without a .golangci.yml config file it uses sensible defaults.
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v7
+        uses: golangci/golangci-lint-action@v9
         with:
           version: v2.10.1
 
