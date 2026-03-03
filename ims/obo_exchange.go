@@ -75,7 +75,7 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error during On-Behalf-Of exchange: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
