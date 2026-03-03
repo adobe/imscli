@@ -18,7 +18,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 )
@@ -34,8 +33,8 @@ type capturedRequest struct {
 }
 
 type requestLog struct {
-	mu       sync.Mutex
-	requests []capturedRequest
+	received bool
+	capturedRequest
 }
 
 func (r *requestLog) record(req *http.Request) {
@@ -50,27 +49,12 @@ func (r *requestLog) record(req *http.Request) {
 		query[k] = v[0]
 	}
 
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	r.requests = append(r.requests, capturedRequest{
-		Method: req.Method,
-		Path:   req.URL.Path,
-		Header: req.Header.Clone(),
-		Form:   form,
-		Query:  query,
-	})
-}
-
-func (r *requestLog) last() capturedRequest {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	return r.requests[len(r.requests)-1]
-}
-
-func (r *requestLog) count() int {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	return len(r.requests)
+	r.received = true
+	r.Method = req.Method
+	r.Path = req.URL.Path
+	r.Header = req.Header.Clone()
+	r.Form = form
+	r.Query = query
 }
 
 func newMockIMS(t *testing.T) (*httptest.Server, *requestLog) {
@@ -156,7 +140,7 @@ func TestPrecedence_FlagOverridesEnv(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if rlog.count() == 0 {
+	if !rlog.received {
 		t.Fatal("mock server received no requests — flag did not override env")
 	}
 }
@@ -172,7 +156,7 @@ func TestPrecedence_EnvOverridesConfigFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if rlog.count() == 0 {
+	if !rlog.received {
 		t.Fatal("mock server received no requests — env did not override config file")
 	}
 }
@@ -187,7 +171,7 @@ func TestPrecedence_ConfigFileOverridesDefault(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if rlog.count() == 0 {
+	if !rlog.received {
 		t.Fatal("mock server received no requests — config file URL not used")
 	}
 }
@@ -271,10 +255,10 @@ func TestURL_SubcommandRouting(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if rlog.count() == 0 {
+			if !rlog.received {
 				t.Fatal("mock server received no requests")
 			}
-			got := rlog.last()
+			got := rlog.capturedRequest
 			if got.Path != tt.path {
 				t.Errorf("path = %q, want %q", got.Path, tt.path)
 			}
@@ -359,10 +343,10 @@ func TestConfigFile_AllValuesFromFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if rlog.count() == 0 {
+	if !rlog.received {
 		t.Fatal("mock server received no requests")
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["client_id"] != "file-cid" {
 		t.Errorf("client_id = %q, want %q", got.Form["client_id"], "file-cid")
 	}
@@ -380,7 +364,7 @@ func TestConfigFile_ExplicitPath(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if rlog.count() == 0 {
+	if !rlog.received {
 		t.Fatal("mock server received no requests")
 	}
 }
@@ -410,7 +394,7 @@ func TestCommandSpecific_ClientIDInForm(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["client_id"] != "my-client" {
 		t.Errorf("client_id = %q, want %q", got.Form["client_id"], "my-client")
 	}
@@ -426,7 +410,7 @@ func TestCommandSpecific_XImsClientIdHeader(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Header.Get("X-Ims-Clientid") != "my-client" {
 		t.Errorf("X-IMS-ClientId = %q, want %q", got.Header.Get("X-Ims-Clientid"), "my-client")
 	}
@@ -441,7 +425,7 @@ func TestCommandSpecific_AuthorizationHeader(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	want := "Bearer my-access-token"
 	if got.Header.Get("Authorization") != want {
 		t.Errorf("Authorization = %q, want %q", got.Header.Get("Authorization"), want)
@@ -459,7 +443,7 @@ func TestCommandSpecific_CascadingFlag(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["cascading"] != "all" {
 		t.Errorf("cascading = %q, want %q", got.Form["cascading"], "all")
 	}
@@ -476,7 +460,7 @@ func TestCommandSpecific_ClientSecretInForm(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["client_secret"] != "my-secret" {
 		t.Errorf("client_secret = %q, want %q", got.Form["client_secret"], "my-secret")
 	}
@@ -494,7 +478,7 @@ func TestCommandSpecific_ExchangeClientIDInQuery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Query["client_id"] != "exch-cid" {
 		t.Errorf("query client_id = %q, want %q", got.Query["client_id"], "exch-cid")
 	}
@@ -511,7 +495,7 @@ func TestCommandSpecific_RefreshFormData(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["grant_type"] != "refresh_token" {
 		t.Errorf("grant_type = %q, want %q", got.Form["grant_type"], "refresh_token")
 	}
@@ -529,7 +513,7 @@ func TestCommandSpecific_AdminGuidAuthSrc(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["guid"] != "user-guid" {
 		t.Errorf("guid = %q, want %q", got.Form["guid"], "user-guid")
 	}
@@ -592,10 +576,10 @@ func TestAPIVersion_Routing(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if rlog.count() == 0 {
+			if !rlog.received {
 				t.Fatal("mock server received no requests")
 			}
-			got := rlog.last()
+			got := rlog.capturedRequest
 			if got.Path != tt.path {
 				t.Errorf("path = %q, want %q", got.Path, tt.path)
 			}
@@ -615,7 +599,7 @@ func TestEnvVar_ClientID(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	if got.Form["client_id"] != "env-cid" {
 		t.Errorf("client_id = %q, want %q", got.Form["client_id"], "env-cid")
 	}
@@ -630,7 +614,7 @@ func TestEnvVar_AccessToken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	got := rlog.last()
+	got := rlog.capturedRequest
 	want := "Bearer env-token"
 	if got.Header.Get("Authorization") != want {
 		t.Errorf("Authorization = %q, want %q", got.Header.Get("Authorization"), want)
