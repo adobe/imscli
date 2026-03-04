@@ -118,3 +118,4 @@ scopes:
 
 user@host$ imscli authorize user
 ```
+
