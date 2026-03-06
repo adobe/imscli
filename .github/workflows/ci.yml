@@ -57,7 +57,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.10.1
+          version: v2.11.1
 
   # Verify the project compiles. Cross-platform builds are handled by
   # GoReleaser at release time, so a single-platform check suffices here.
