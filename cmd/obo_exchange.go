@@ -22,7 +22,7 @@ func oboExchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		Use:     "on-behalf-of",
 		Aliases: []string{"obo"},
 		Short:   "On-Behalf-Of token exchange.",
-		Long: `On-Behalf-Of token exchange: exchange a user access token for a new token. Do NOT send OBO access tokens to frontend clients.`,
+		Long:    `On-Behalf-Of token exchange: exchange a user access token for a new token. Do NOT send OBO access tokens to frontend clients.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
