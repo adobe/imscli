@@ -21,8 +21,6 @@ require (
 	github.com/spf13/viper v1.21.0
 )
 
-replace github.com/adobe/ims-go => github.com/Eiermitsucuk/ims-go v0.19.2
-
 require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
