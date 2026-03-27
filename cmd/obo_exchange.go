@@ -22,25 +22,25 @@ func oboExchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		Use:     "on-behalf-of",
 		Aliases: []string{"obo"},
 		Short:   "On-Behalf-Of token exchange.",
-		Long:    `On-Behalf-Of token exchange: exchange a user access token for a new token. Do NOT send OBO access tokens to frontend clients.`,
+		Long:    `Do NOT send OBO access tokens to frontend clients.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 			cmd.SilenceErrors = true
 
 			resp, err := imsConfig.OBOExchange()
 			if err != nil {
-				return fmt.Errorf("error during On-Behalf-Of exchange: %v", err)
+				return fmt.Errorf("error during On-Behalf-Of exchange: %w", err)
 			}
 			fmt.Println(resp.AccessToken)
 			return nil
 		},
 	}
-
+ 
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "User access token (subject token). Only access tokens are accepted.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{""},
-		"Scopes to request. Must be within the client's configured scope boundary.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", nil,
+		"Optional scopes to request; if omitted, none are sent. When set, must stay within the client's configured scope boundary.")
 
 	return cmd
 }

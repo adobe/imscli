@@ -29,6 +29,10 @@ func (i Config) validateOBOExchangeConfig() error {
 		return fmt.Errorf("missing IMS base URL parameter")
 	case !validateURL(i.URL):
 		return fmt.Errorf("invalid IMS base URL parameter")
+	case i.ClientID == "":
+		return fmt.Errorf("missing client ID parameter")
+	case i.ClientSecret == "":
+		return fmt.Errorf("missing client secret parameter")
 	case i.AccessToken == "":
 		return fmt.Errorf("missing access token parameter")
 	default:
