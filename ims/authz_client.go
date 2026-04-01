@@ -50,6 +50,7 @@ func (i Config) AuthorizeClientCredentials() (string, error) {
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
 		GrantType:    "client_credentials",
+		OrgID:        i.Organization,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error requesting token: %w", err)

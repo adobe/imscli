@@ -522,6 +522,41 @@ func TestCommandSpecific_AdminGuidAuthSrc(t *testing.T) {
 	}
 }
 
+func TestCommandSpecific_ClientCredentialsOrgID(t *testing.T) {
+	srv, rlog := newMockIMS(t)
+	empty := writeConfigFile(t, "")
+	_, _, err := execCmd(t, "authorize", "clientCredentials",
+		"--url", srv.URL, "--configFile", empty,
+		"--clientID", "cid",
+		"--clientSecret", "sec",
+		"--scopes", "openid",
+		"--organization", "my-org")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	got := rlog.capturedRequest
+	if got.Form["org_id"] != "my-org" {
+		t.Errorf("org_id = %q, want %q", got.Form["org_id"], "my-org")
+	}
+}
+
+func TestCommandSpecific_ClientCredentialsNoOrgID(t *testing.T) {
+	srv, rlog := newMockIMS(t)
+	empty := writeConfigFile(t, "")
+	_, _, err := execCmd(t, "authorize", "clientCredentials",
+		"--url", srv.URL, "--configFile", empty,
+		"--clientID", "cid",
+		"--clientSecret", "sec",
+		"--scopes", "openid")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	got := rlog.capturedRequest
+	if _, ok := got.Form["org_id"]; ok {
+		t.Errorf("org_id should not be present in request, got %q", got.Form["org_id"])
+	}
+}
+
 // ---------- 6. API version flags ----------
 
 func TestAPIVersion_Routing(t *testing.T) {
