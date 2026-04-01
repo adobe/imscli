@@ -15,7 +15,7 @@ go 1.23.0
 toolchain go1.26.1
 
 require (
-	github.com/adobe/ims-go v0.20.0
+	github.com/adobe/ims-go v0.21.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
