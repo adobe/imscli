@@ -51,6 +51,7 @@ func (i Config) DCRRegister() (string, error) {
 	resp, err := c.DCR(&ims.DCRRequest{
 		ClientName:   i.ClientName,
 		RedirectURIs: i.RedirectURIs,
+		Scopes:       i.Scopes,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error during client registration: %w", err)
