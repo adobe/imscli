@@ -38,7 +38,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			resp, err := imsConfig.Register()
+			resp, err := imsConfig.DCRRegister()
 			if err != nil {
 				return fmt.Errorf("error during client registration: %w", err)
 			}

@@ -295,7 +295,7 @@ func TestValidateAuthorizeClientCredentialsConfig(t *testing.T) {
 	}
 }
 
-func TestValidateRegisterConfig(t *testing.T) {
+func TestValidateDCRConfig(t *testing.T) {
 	tests := []struct {
 		name    string
 		config  Config
@@ -308,7 +308,7 @@ func TestValidateRegisterConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.config.validateRegisterConfig()
+			err := tt.config.validateDCRConfig()
 			assertError(t, err, tt.wantErr)
 		})
 	}
