@@ -18,11 +18,6 @@ import (
 	"github.com/adobe/ims-go/ims"
 )
 
-const (
-	dcrRegisterPath        = "/ims/register"
-	maxDCRResponseBodySize = 1 << 20 // 1 MiB
-)
-
 func (i Config) validateDCRConfig() error {
 	switch {
 	case i.URL == "":
