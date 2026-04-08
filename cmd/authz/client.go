@@ -39,6 +39,7 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Scopes to request.")
+	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
 
 	return cmd
 }
