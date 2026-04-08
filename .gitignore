@@ -68,4 +68,3 @@ Temporary Items
 dist/
 /imscli
 go.mod.local
-demo.sh
