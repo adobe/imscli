@@ -35,7 +35,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 		Use:   "register",
 		Short: "Register a client.",
 		Long:  `Register a new OAuth client using Dynamic Client Registration.`,
-		RunE: func(cmd *cobra.Command, asrgs []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
 			resp, err := imsConfig.DCRRegister()
