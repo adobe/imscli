@@ -38,7 +38,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-			resp, err := imsConfig.Register()
+			resp, err := imsConfig.DCRRegister()
 			if err != nil {
 				return fmt.Errorf("error during client registration: %w", err)
 			}
@@ -50,6 +50,7 @@ func registerCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd.Flags().StringVarP(&imsConfig.ClientName, "clientName", "n", "", "Client application name.")
 	cmd.Flags().StringSliceVarP(&imsConfig.RedirectURIs, "redirectURIs", "r", []string{}, "Redirect URIs (comma-separated or multiple flags).")
+	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Requested scopes (comma-separated or multiple flags).")
 
 	return cmd
 }
