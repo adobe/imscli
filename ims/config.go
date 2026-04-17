@@ -53,7 +53,8 @@ type Config struct {
 	AuthSrc               string
 	DecodeFulfillableData bool
 	ClientName            string
-	RedirectURIs []string
+	RedirectURIs          []string
+	Resource              []string
 }
 
 // TokenInfo holds the response data from token-related IMS API calls.

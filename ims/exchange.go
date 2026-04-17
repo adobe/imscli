@@ -56,6 +56,7 @@ func (i Config) ClusterExchange() (TokenInfo, error) {
 		UserID:       i.UserID,
 		OrgID:        i.Organization,
 		Scopes:       i.Scopes,
+		Resource:     i.Resource,
 	})
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error during the cluster exchange: %w", err)

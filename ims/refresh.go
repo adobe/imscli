@@ -50,6 +50,7 @@ func (i Config) Refresh() (RefreshInfo, error) {
 		ClientSecret: i.ClientSecret,
 		RefreshToken: i.RefreshToken,
 		Scope:        i.Scopes,
+		Resource:     i.Resource,
 	})
 	if err != nil {
 		return RefreshInfo{}, fmt.Errorf("error during the token refresh: %w", err)

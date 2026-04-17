@@ -91,6 +91,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 		ClientSecret: i.ClientSecret,
 		Scope:        i.Scopes,
 		UsePKCE:      pkce,
+		Resource:     i.Resource,
 		RedirectURI:  fmt.Sprintf("http://localhost:%d", i.Port),
 		OnError: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintln(w, `
