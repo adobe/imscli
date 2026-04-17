@@ -82,7 +82,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Claims:       claims,
-		Resource:     i.Resource,
+		Resources:    i.Resource,
 	})
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error exchanging JWT: %w", err)
