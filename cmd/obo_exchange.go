@@ -41,6 +41,7 @@ func oboExchangeCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.AccessToken, "accessToken", "t", "", "User access token (subject token). Only access tokens are accepted.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", nil,
 		"Optional scopes to request; if omitted, none are sent. When set, must stay within the client's configured scope boundary.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

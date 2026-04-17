@@ -42,6 +42,7 @@ func UserPkceCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Scopes to request.")
 	cmd.Flags().BoolVarP(&imsConfig.PublicClient, "public", "b", false, "Public client, ignore secret.")
 	cmd.Flags().IntVarP(&imsConfig.Port, "port", "l", 8888, "Local port to be used by the OAuth Client.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

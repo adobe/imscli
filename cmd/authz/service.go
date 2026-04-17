@@ -38,6 +38,7 @@ func ServiceCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientID, "clientID", "c", "", "IMS client ID.")
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringVarP(&imsConfig.AuthorizationCode, "authorizationCode", "x", "", "Permanent authorization code.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

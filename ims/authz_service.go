@@ -49,6 +49,7 @@ func (i Config) AuthorizeService() (string, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Code:         i.AuthorizationCode,
+		Resource:     i.Resource,
 	})
 	if err != nil {
 		return "", fmt.Errorf("error requesting token: %w", err)

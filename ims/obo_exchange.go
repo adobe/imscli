@@ -56,6 +56,7 @@ func (i Config) OBOExchange() (TokenInfo, error) {
 		ClientSecret: i.ClientSecret,
 		SubjectToken: i.AccessToken,
 		Scopes:       i.Scopes,
+		Resource:     i.Resource,
 	})
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error during the On-Behalf-Of exchange: %w", err)

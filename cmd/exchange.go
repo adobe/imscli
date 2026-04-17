@@ -49,5 +49,7 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 
 	cmd.MarkFlagsMutuallyExclusive("organization", "userID")
 
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
+
 	return cmd
 }
