@@ -65,9 +65,8 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		}
 	}()
 
-	// 	Metascopes are passed as generic claims with the format map[string]any
-	//  where the strings are in the form: baseIMSUrl/s/metascope
-	//  and the value is 'true'
+	// 	Metascopes are passed as generic claims with the format map[string]any,
+	//  where the strings are in the form: baseIMSUrl/s/metascope and the value is 'true'
 
 	baseURL := strings.TrimRight(i.URL, "/")
 	claims := make(map[string]any)
@@ -83,6 +82,7 @@ func (i Config) AuthorizeJWTExchange() (TokenInfo, error) {
 		ClientID:     i.ClientID,
 		ClientSecret: i.ClientSecret,
 		Claims:       claims,
+		Resources:    i.Resource,
 	})
 	if err != nil {
 		return TokenInfo{}, fmt.Errorf("error exchanging JWT: %w", err)

@@ -25,7 +25,6 @@ func JWTCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-
 			resp, err := imsConfig.AuthorizeJWTExchange()
 			if err != nil {
 				return fmt.Errorf("error in jwt authorization: %w", err)
@@ -41,6 +40,8 @@ func JWTCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.Account, "account", "A", "", "Technical Account ID.")
 	cmd.Flags().StringVarP(&imsConfig.PrivateKeyPath, "privateKey", "k", "", "Private Key file.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Metascopes, "metascopes", "m", []string{}, "Metascopes to request.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil,
+		"RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }
