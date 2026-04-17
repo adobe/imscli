@@ -27,7 +27,6 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-
 			resp, err := imsConfig.Refresh()
 			if err != nil {
 				return fmt.Errorf("error during the token refresh: %w", err)
@@ -56,7 +55,8 @@ func refreshCmd(imsConfig *ims.Config) *cobra.Command {
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
 			"scopes are requested the same scopes of the original token will be provided.")
 	cmd.Flags().BoolVarP(&imsConfig.FullOutput, "fullOutput", "F", false, "Output a JSON with access and refresh tokens.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil,
+		"RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

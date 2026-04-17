@@ -26,7 +26,6 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-
 			resp, err := imsConfig.ClusterExchange()
 			if err != nil {
 				return fmt.Errorf("error exchanging the access token: %w", err)
@@ -46,10 +45,10 @@ func exchangeCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{},
 		"Scopes to request in the new token. Subset of the scopes of the original token. Optional value, if no "+
 			"scopes are requested the same scopes of the original token will be provided")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil,
+		"RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	cmd.MarkFlagsMutuallyExclusive("organization", "userID")
-
-	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

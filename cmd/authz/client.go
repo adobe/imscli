@@ -26,7 +26,6 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
-
 			resp, err := imsConfig.AuthorizeClientCredentials()
 			if err != nil {
 				return fmt.Errorf("error in login service: %w", err)
@@ -40,7 +39,8 @@ func ClientCredentialsCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().StringVarP(&imsConfig.ClientSecret, "clientSecret", "p", "", "IMS client secret.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Scopes, "scopes", "s", []string{}, "Scopes to request.")
 	cmd.Flags().StringVarP(&imsConfig.Organization, "organization", "o", "", "IMS Organization.")
-	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil, "RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
+	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil,
+		"RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }
