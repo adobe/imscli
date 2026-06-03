@@ -25,8 +25,7 @@ func ImplicitCmd(imsConfig *ims.Config) *cobra.Command {
 		Long: "Perform the 'Implicit Grant Flow' by launching a browser, completing authentication with IMS, " +
 			"and capturing the access token. IMS redirects to a static page (default: " +
 			ims.DefaultImplicitRedirectURI + ") that converts the URL fragment to a query string and " +
-			"forwards it to the local callback server. Public clients only; no client secret is sent. " +
-			"Note that the implicit flow is deprecated in OAuth 2.1 — prefer 'pkce' for new use cases.",
+			"forwards it to the local callback server.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.SilenceUsage = true
 
