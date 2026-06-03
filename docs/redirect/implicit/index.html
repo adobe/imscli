@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>imscli implicit-flow redirection to localhost:8888</title>
+  </head>
+  <body>
+    <h1>If your browser is not automatically redirected, copy the URL from your address bar — the access token is in the fragment (after the <code>#</code>).</h1>
+    <script>
+        location.replace("http://localhost:8888/?" + window.location.hash.substring(1));
+    </script>
+    <noscript>
+      <h1>This browser doesn't support JavaScript. <br>
+          Copy the URL from your address bar — the access token is in the fragment (after the <code>#</code>).</h1>
+    </noscript>
+  </body>
+</html>

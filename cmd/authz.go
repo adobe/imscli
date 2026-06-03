@@ -29,6 +29,7 @@ This command has no effect by itself, the authorization type needs to be specifi
 	cmd.AddCommand(
 		authz.UserCmd(imsConfig),
 		authz.UserPkceCmd(imsConfig),
+		authz.ImplicitCmd(imsConfig),
 		authz.ServiceCmd(imsConfig),
 		authz.JWTCmd(imsConfig),
 		authz.ClientCredentialsCmd(imsConfig),
