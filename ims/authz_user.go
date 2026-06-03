@@ -21,7 +21,6 @@ import (
 
 	"github.com/adobe/ims-go/ims"
 	"github.com/adobe/ims-go/login"
-	"github.com/pkg/browser"
 )
 
 const (
@@ -120,17 +119,7 @@ func (i Config) authorizeUser(pkce bool) (string, error) {
 
 	localUrl := fmt.Sprintf("http://localhost:%d/", i.Port)
 
-	// Suppress "Opening in existing browser session." messages from chromium-based
-	// browsers. The CLI token output goes to stdout, so stray browser messages
-	// would corrupt piped/scripted output. Save and restore to avoid permanent
-	// mutation of the package-level variable.
-	origStdout := browser.Stdout
-	browser.Stdout = nil
-	err = browser.OpenURL(localUrl)
-	browser.Stdout = origStdout
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error launching the browser, open it and visit %s\n", localUrl)
-	}
+	openBrowser(localUrl)
 
 	// Capture Serve errors via a buffered channel. Buffered so the goroutine
 	// can always write and exit, even if nobody reads (e.g., a response arrived

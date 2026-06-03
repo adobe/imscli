@@ -43,9 +43,9 @@ func ImplicitCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd.Flags().IntVarP(&imsConfig.Port, "port", "l", 8888, "Local port to be used by the OAuth Client. "+
 		"Must match the port that the redirector page sends the browser to (the default redirector pins 8888).")
 	cmd.Flags().StringVar(&imsConfig.RedirectURI, "redirectURI", ims.DefaultImplicitRedirectURI,
-		"Redirect URI registered with IMS. Defaults to the canonical public redirector; override to use a self-hosted page (e.g., when running on a non-default port).")
+		"Redirect URI registered with IMS.")
 	cmd.Flags().StringSliceVarP(&imsConfig.Resource, "resource", "r", nil,
-		"RFC 8707 resource indicator URI(s) for audience-restricted tokens.")
+		"Resource indicator URI(s) for audience-restricted tokens.")
 
 	return cmd
 }

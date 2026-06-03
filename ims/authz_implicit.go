@@ -24,7 +24,6 @@ import (
 	"time"
 
 	"github.com/adobe/ims-go/ims"
-	"github.com/pkg/browser"
 )
 
 // DefaultImplicitRedirectURI is the canonical public redirector served from
@@ -94,9 +93,63 @@ func (i Config) AuthorizeImplicit() (string, error) {
 		return "", fmt.Errorf("build authorize URL: %w", err)
 	}
 
-	// Buffered channels: handlers can always send and exit, even if the main
-	// goroutine has already moved on (e.g., after a timeout). Avoids the
-	// shutdown deadlock pattern documented in docs/oauth-shutdown-deadlock.md.
+	srv, err := startCaptureServer(state, i.Port)
+	if err != nil {
+		return "", err
+	}
+	log.Println("Local server successfully launched and contacted.")
+
+	openBrowser(authURL)
+
+	var (
+		serr error
+		resp *TokenInfo
+	)
+
+	select {
+	case serr = <-srv.errCh:
+		log.Println("The implicit callback handler returned an error message.")
+	case resp = <-srv.resCh:
+		log.Println("The implicit callback handler returned a token.")
+	case serr = <-srv.serveCh:
+		log.Println("The local server stopped unexpectedly.")
+	case <-time.After(authTimeout):
+		fmt.Fprintf(os.Stderr, "Timeout reached waiting for the user to finish the authentication ...\n")
+		serr = fmt.Errorf("user timed out")
+	}
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	if err := srv.server.Shutdown(shutdownCtx); err != nil {
+		return "", fmt.Errorf("error shutting down the local server: %w", err)
+	}
+	log.Println("Local server shut down ...")
+
+	if serr != nil {
+		return "", fmt.Errorf("error in implicit authorization: %w", serr)
+	}
+
+	return resp.AccessToken, nil
+}
+
+// captureServer is the local HTTP listener that receives the access token
+// from the static redirector page after the JS bridge rewrites the URL
+// fragment into a query string.
+type captureServer struct {
+	server  *http.Server
+	resCh   <-chan *TokenInfo
+	errCh   <-chan error
+	serveCh <-chan error
+}
+
+// startCaptureServer creates and starts the local capture HTTP server in a
+// background goroutine, listening on the given port. The returned channels
+// signal the outcome: resCh on success, errCh on handler-level errors,
+// serveCh if the server itself stops unexpectedly. The caller is responsible
+// for calling Shutdown on the server when done; that also closes the listener
+// via http.Server.Serve's unwind.
+func startCaptureServer(state string, port int) (*captureServer, error) {
 	resCh := make(chan *TokenInfo, 1)
 	errCh := make(chan error, 1)
 
@@ -111,24 +164,9 @@ func (i Config) AuthorizeImplicit() (string, error) {
 
 	server := &http.Server{Handler: mux}
 
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", i.Port))
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		return "", fmt.Errorf("unable to listen at port %d", i.Port)
-	}
-	defer func() { _ = listener.Close() }()
-
-	log.Println("Local server successfully launched and contacted.")
-
-	// Suppress chromium "Opening in existing browser session" messages; the CLI
-	// token output goes to stdout, so stray browser messages would corrupt
-	// piped/scripted output. Save and restore to avoid permanent mutation of
-	// the package-level variable.
-	origStdout := browser.Stdout
-	browser.Stdout = nil
-	err = browser.OpenURL(authURL)
-	browser.Stdout = origStdout
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error launching the browser, open it and visit %s\n", authURL)
+		return nil, fmt.Errorf("unable to listen at port %d: %w", port, err)
 	}
 
 	// Capture Serve errors via a buffered channel. See ims/authz_user.go:136-140
@@ -138,36 +176,12 @@ func (i Config) AuthorizeImplicit() (string, error) {
 		serveCh <- server.Serve(listener)
 	}()
 
-	var (
-		serr error
-		resp *TokenInfo
-	)
-
-	select {
-	case serr = <-errCh:
-		log.Println("The implicit callback handler returned an error message.")
-	case resp = <-resCh:
-		log.Println("The implicit callback handler returned a token.")
-	case serr = <-serveCh:
-		log.Println("The local server stopped unexpectedly.")
-	case <-time.After(authTimeout):
-		fmt.Fprintf(os.Stderr, "Timeout reached waiting for the user to finish the authentication ...\n")
-		serr = fmt.Errorf("user timed out")
-	}
-
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-	defer cancel()
-
-	if err := server.Shutdown(shutdownCtx); err != nil {
-		return "", fmt.Errorf("error shutting down the local server: %w", err)
-	}
-	log.Println("Local server shut down ...")
-
-	if serr != nil {
-		return "", fmt.Errorf("error in implicit authorization: %w", serr)
-	}
-
-	return resp.AccessToken, nil
+	return &captureServer{
+		server:  server,
+		resCh:   resCh,
+		errCh:   errCh,
+		serveCh: serveCh,
+	}, nil
 }
 
 // implicitHandler holds the per-request state for the implicit-flow callback.
