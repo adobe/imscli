@@ -54,6 +54,7 @@ type Config struct {
 	DecodeFulfillableData bool
 	ClientName            string
 	RedirectURIs          []string
+	RedirectURI           string
 	Resource              []string
 }
 
