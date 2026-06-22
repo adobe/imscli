@@ -17,7 +17,7 @@ jobs:
     steps:
       # Full history is required for GoReleaser to generate the changelog.
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
