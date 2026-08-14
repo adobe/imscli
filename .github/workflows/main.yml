@@ -23,7 +23,7 @@ jobs:
 
       # Go version is read from go.mod so it stays in sync with the project.
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
 
