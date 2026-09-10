@@ -56,6 +56,8 @@ type Config struct {
 	RedirectURIs          []string
 	RedirectURI           string
 	Resource              []string
+	PromiseDefinitionID   string
+	PromiseToken          string
 }
 
 // TokenInfo holds the response data from token-related IMS API calls.
