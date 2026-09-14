@@ -18,9 +18,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func promiseTokenCmd(imsConfig *ims.Config) *cobra.Command {
+func promiseCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "promise-token",
+		Use:   "promise",
+		Short: "Use the IMS Promise Token flows.",
+		Long: `The promise command performs requests against the IMS /ims/token/v4 endpoint.
+
+This command has no effect by itself, the request needs to be specified as a subcommand.
+`,
+	}
+	cmd.AddCommand(
+		accessForPromiseCmd(imsConfig),
+		promiseForAccessCmd(imsConfig),
+	)
+	return cmd
+}
+
+func accessForPromiseCmd(imsConfig *ims.Config) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "access-for-promise",
 		Short: "Exchange an access token for a promise token.",
 		Long:  `Perform the IMS Promise Token grant (grant_type=promise) to exchange an authenticating access token for a promise token.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -59,9 +75,9 @@ func promiseTokenCmd(imsConfig *ims.Config) *cobra.Command {
 	return cmd
 }
 
-func promiseExchangeCmd(imsConfig *ims.Config) *cobra.Command {
+func promiseForAccessCmd(imsConfig *ims.Config) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "promise-exchange",
+		Use:   "promise-for-access",
 		Short: "Exchange a promise token for an access token.",
 		Long:  `Perform the IMS Promise Exchange grant (grant_type=promise_exchange) to redeem a promise token for a fresh access token and a rotated promise token.`,
 		RunE: func(cmd *cobra.Command, args []string) error {

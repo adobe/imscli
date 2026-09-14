@@ -53,8 +53,7 @@ func RootCmd(version string) *cobra.Command {
 
 	cmd.AddCommand(
 		oboExchangeCmd(imsConfig),
-		promiseTokenCmd(imsConfig),
-		promiseExchangeCmd(imsConfig),
+		promiseCmd(imsConfig),
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),
