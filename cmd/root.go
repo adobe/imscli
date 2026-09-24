@@ -27,9 +27,9 @@ func RootCmd(version string) *cobra.Command {
 	var imsConfig = &ims.Config{}
 
 	cmd := &cobra.Command{
-		Use:     "imscli",
-		Short:   "imscli is a tool to interact with Adobe IMS",
-		Long:    `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
+		Use:           "imscli",
+		Short:         "imscli is a tool to interact with Adobe IMS",
+		Long:          `imscli is a CLI tool to automate and troubleshoot Adobe's authentication and authorization service IMS.`,
 		Version:       version,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -53,6 +53,7 @@ func RootCmd(version string) *cobra.Command {
 
 	cmd.AddCommand(
 		oboExchangeCmd(imsConfig),
+		promiseCmd(imsConfig),
 		authzCmd(imsConfig),
 		profileCmd(imsConfig),
 		organizationsCmd(imsConfig),

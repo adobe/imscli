@@ -67,6 +67,15 @@ Decodes a JWT token locally, printing the header and payload without contacting 
 
 Refreshes an access token using a refresh token.
 
+### Promise
+
+Two flows against the IMS `/ims/token/v4` endpoint:
+
+- **promise access-for-promise**: Exchanges an authenticating access token for a promise token (`grant_type=promise`), using a client ID, client secret, promise definition ID, and scopes.
+- **promise promise-for-access**: Redeems a promise token for a fresh access token and a rotated promise token (`grant_type=promise_exchange`).
+
+Both subcommands print the resulting token by default, or a JSON document with the full response when `--fullOutput` is set.
+
 ### Admin
 
 Administrative operations using a service token:
